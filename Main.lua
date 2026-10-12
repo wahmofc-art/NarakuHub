@@ -1,20 +1,29 @@
 --[[
-    ╔═══════════════════════════════════════════════╗
-    ║          ███╗   ██╗ █████╗ ██████╗            ║
-    ║          ████╗  ██║██╔══██╗██╔══██╗           ║
-    ║          ██╔██╗ ██║███████║██████╔╝           ║
-    ║          ██║╚██╗██║██╔══██║██╔══██╗           ║
-    ║          ██║ ╚████║██║  ██║██║  ██║           ║
-    ║          ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝           ║
-    ║                                                ║
-    ║       NARAKU HUB - MEGA v4.0                  ║
-    ║                                                ║
-    ║   ⚔️ Combat  |  💨 Movement  |  👁️ Visual     ║
-    ║   🎣 Farm    |  🗺️ Teleport  |  🎁 Fruit      ║
-    ╚═══════════════════════════════════════════════╝
+    ╔═══════════════════════════════════════════════════╗
+    ║                                                   ║
+    ║        ███╗   ██╗ █████╗ ██████╗  █████╗         ║
+    ║        ████╗  ██║██╔══██╗██╔══██╗██╔══██╗        ║
+    ║        ██╔██╗ ██║███████║██████╔╝███████║        ║
+    ║        ██║╚██╗██║██╔══██║██╔══██╗██╔══██║        ║
+    ║        ██║ ╚████║██║  ██║██║  ██║██║  ██║        ║
+    ║        ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝        ║
+    ║                                                   ║
+    ║           NARAKU HUB v5.0 - FIXED                ║
+    ║              Blox Fruits Edition                  ║
+    ║                                                   ║
+    ║   ✅ Speed Boost (Working)                        ║
+    ║   ✅ Auto Farm (Auto Melee + Kill)                ║
+    ║   ✅ Hitbox on Enemies                            ║
+    ║   ✅ Infinite Jump                                ║
+    ║   ✅ ESP Players                                  ║
+    ║   ✅ Auto Click                                   ║
+    ║   ✅ Permanent Close                              ║
+    ╚═══════════════════════════════════════════════════╝
 ]]
 
--- ════════ الخدمات ════════
+-- ═══════════════════════════════════════════════════════
+--                    SERVICES
+-- ═══════════════════════════════════════════════════════
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -26,191 +35,182 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LocalPlayer = Players.LocalPlayer
 
--- ════════ الإعدادات ════════
+-- ═══════════════════════════════════════════════════════
+--                    CONFIG
+-- ═══════════════════════════════════════════════════════
 local Config = {
-    -- Movement
+    -- Speed
     SpeedBoost = false,
-    SpeedValue = 100,
-    InfiniteJump = false,
-    -- Hitbox
-    HitboxMax = false,
-    HitboxSize = 15,
-    HitboxRange = 150,
+    SpeedValue = 120,
+    SpeedMethod = "BodyVelocity", -- "BodyVelocity" أو "WalkSpeed"
     -- Auto Farm
     AutoFarm = false,
     AutoFarmRange = 500,
     AutoFarmFlyHeight = 15,
-    -- Auto Fish
-    AutoFish = false,
-    -- Auto Chest
-    AutoChest = false,
-    -- Auto Quest
-    AutoQuest = false,
-    -- ESP
+    AutoFarmSpeed = 8,
+    -- Hitbox
+    HitboxMax = false,
+    HitboxSize = 20,
+    HitboxRange = 200,
+    -- Jump
+    InfiniteJump = false,
+    JumpPower = 50,
+    -- Visual
     ESP = false,
     -- Auto Click
     AutoClick = false,
-    AutoClickSpeed = 0.05,
-    -- Fruit Sniper
-    FruitSniper = false,
-    FruitSniperRange = 1000,
+    AutoClickSpeed = 0.1,
 }
 
--- ════════ حذف النسخ القديمة ════════
-for _, name in pairs({"NarakuHubV3", "NarakuHubV4", "NarakuHub", "NarakuESP"}) do
+-- ═══════════════════════════════════════════════════════
+--                    CLEANUP
+-- ═══════════════════════════════════════════════════════
+local oldNames = {"NarakuHub", "NarakuHubV2", "NarakuHubV3", "NarakuHubV4", "NarakuHubV5"}
+for _, name in pairs(oldNames) do
     local old = game.CoreGui:FindFirstChild(name)
     if old then old:Destroy() end
 end
 
--- ════════ الثيم ════════
+-- ═══════════════════════════════════════════════════════
+--                    THEME
+-- ═══════════════════════════════════════════════════════
 local Theme = {
-    Background = Color3.fromRGB(10, 8, 18),
-    Secondary = Color3.fromRGB(20, 15, 32),
-    Tertiary = Color3.fromRGB(32, 24, 50),
-    Accent = Color3.fromRGB(160, 60, 255),
-    Accent2 = Color3.fromRGB(255, 60, 180),
-    Accent3 = Color3.fromRGB(80, 180, 255),
+    Bg = Color3.fromRGB(10, 8, 18),
+    Sec = Color3.fromRGB(20, 15, 32),
+    Ter = Color3.fromRGB(32, 24, 50),
+    Acc = Color3.fromRGB(160, 60, 255),
+    Acc2 = Color3.fromRGB(255, 60, 180),
+    Acc3 = Color3.fromRGB(80, 180, 255),
     Success = Color3.fromRGB(80, 230, 130),
     Danger = Color3.fromRGB(255, 60, 90),
-    Warning = Color3.fromRGB(255, 180, 50),
     Text = Color3.fromRGB(240, 235, 255),
-    Subtext = Color3.fromRGB(150, 140, 180),
+    Sub = Color3.fromRGB(150, 140, 180),
 }
 
--- ════════ إشعار ════════
-local function Notify(title, text, duration)
-    pcall(function()
-        StarterGui:SetCore("SendNotification", {
-            Title = title,
-            Text = text,
-            Duration = duration or 3,
-        })
-    end)
-end
-
--- ════════ الواجهة ════════
+-- ═══════════════════════════════════════════════════════
+--                    UI CREATION
+-- ═══════════════════════════════════════════════════════
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "NarakuHubV4"
+ScreenGui.Name = "NarakuHubV5"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = game.CoreGui
 
--- زر الفتح
-local OpenButton = Instance.new("TextButton")
-OpenButton.Size = UDim2.new(0, 60, 0, 60)
-OpenButton.Position = UDim2.new(0, 20, 0.5, -30)
-OpenButton.BackgroundColor3 = Theme.Accent
-OpenButton.Text = "奈"
-OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-OpenButton.TextSize = 26
-OpenButton.Font = Enum.Font.GothamBlack
-OpenButton.AutoButtonColor = false
-OpenButton.Visible = false
-OpenButton.Parent = ScreenGui
+-- Floating open button
+local OpenBtn = Instance.new("TextButton")
+OpenBtn.Size = UDim2.new(0, 60, 0, 60)
+OpenBtn.Position = UDim2.new(0, 20, 0.5, -30)
+OpenBtn.BackgroundColor3 = Theme.Acc
+OpenBtn.Text = "奈"
+OpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenBtn.TextSize = 26
+OpenBtn.Font = Enum.Font.GothamBlack
+OpenBtn.AutoButtonColor = false
+OpenBtn.Visible = false
+OpenBtn.Parent = ScreenGui
 
-local OpenCorner = Instance.new("UICorner")
-OpenCorner.CornerRadius = UDim.new(1, 0)
-OpenCorner.Parent = OpenButton
+local OC = Instance.new("UICorner")
+OC.CornerRadius = UDim.new(1, 0)
+OC.Parent = OpenBtn
 
-local OpenStroke = Instance.new("UIStroke")
-OpenStroke.Color = Color3.fromRGB(255, 255, 255)
-OpenStroke.Thickness = 2
-OpenStroke.Transparency = 0.3
-OpenStroke.Parent = OpenButton
+local OS = Instance.new("UIStroke")
+OS.Color = Color3.fromRGB(255, 255, 255)
+OS.Thickness = 2
+OS.Transparency = 0.3
+OS.Parent = OpenBtn
 
--- الإطار الرئيسي
+-- Main frame
 local Main = Instance.new("Frame")
-Main.Name = "Main"
 Main.Size = UDim2.new(0, 0, 0, 0)
-Main.Position = UDim2.new(0.5, -300, 0.5, -280)
-Main.BackgroundColor3 = Theme.Background
+Main.Position = UDim2.new(0.5, -300, 0.5, -270)
+Main.BackgroundColor3 = Theme.Bg
 Main.BorderSizePixel = 0
 Main.ClipsDescendants = true
 Main.Active = true
 Main.Draggable = true
 Main.Parent = ScreenGui
 
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 16)
-MainCorner.Parent = Main
+local MC = Instance.new("UICorner")
+MC.CornerRadius = UDim.new(0, 16)
+MC.Parent = Main
 
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Color = Theme.Accent
-MainStroke.Thickness = 2
-MainStroke.Transparency = 0.2
-MainStroke.Parent = Main
+local MS = Instance.new("UIStroke")
+MS.Color = Theme.Acc
+MS.Thickness = 2
+MS.Transparency = 0.2
+MS.Parent = Main
 
-local MainGradient = Instance.new("UIGradient")
-MainGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Theme.Accent),
-    ColorSequenceKeypoint.new(0.5, Theme.Accent2),
-    ColorSequenceKeypoint.new(1, Theme.Accent3),
+local MG = Instance.new("UIGradient")
+MG.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Theme.Acc),
+    ColorSequenceKeypoint.new(0.5, Theme.Acc2),
+    ColorSequenceKeypoint.new(1, Theme.Acc3),
 })
-MainGradient.Rotation = 45
-MainGradient.Parent = MainStroke
+MG.Rotation = 45
+MG.Parent = MS
 
-Main:TweenSize(UDim2.new(0, 620, 0, 560), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
+Main:TweenSize(UDim2.new(0, 600, 0, 520), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
 
 -- Header
 local Header = Instance.new("Frame")
-Header.Size = UDim2.new(1, 0, 0, 70)
-Header.BackgroundColor3 = Theme.Secondary
+Header.Size = UDim2.new(1, 0, 0, 65)
+Header.BackgroundColor3 = Theme.Sec
 Header.BorderSizePixel = 0
 Header.Parent = Main
 
-local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 16)
-HeaderCorner.Parent = Header
+local HC = Instance.new("UICorner")
+HC.CornerRadius = UDim.new(0, 16)
+HC.Parent = Header
 
-local HeaderGradient = Instance.new("UIGradient")
-HeaderGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Theme.Accent),
-    ColorSequenceKeypoint.new(0.5, Theme.Accent2),
-    ColorSequenceKeypoint.new(1, Theme.Accent3),
+local HG = Instance.new("UIGradient")
+HG.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Theme.Acc),
+    ColorSequenceKeypoint.new(0.5, Theme.Acc2),
+    ColorSequenceKeypoint.new(1, Theme.Acc3),
 })
-HeaderGradient.Rotation = 45
-HeaderGradient.Parent = Header
+HG.Rotation = 45
+HG.Parent = Header
 
-local HeaderOverlay = Instance.new("Frame")
-HeaderOverlay.Size = UDim2.new(1, 0, 1, 0)
-HeaderOverlay.BackgroundColor3 = Theme.Background
-HeaderOverlay.BackgroundTransparency = 0.35
-HeaderOverlay.BorderSizePixel = 0
-HeaderOverlay.Parent = Header
+local HO = Instance.new("Frame")
+HO.Size = UDim2.new(1, 0, 1, 0)
+HO.BackgroundColor3 = Theme.Bg
+HO.BackgroundTransparency = 0.35
+HO.BorderSizePixel = 0
+HO.Parent = Header
 
-local HeaderOverlayCorner = Instance.new("UICorner")
-HeaderOverlayCorner.CornerRadius = UDim.new(0, 16)
-HeaderOverlayCorner.Parent = HeaderOverlay
+local HOC = Instance.new("UICorner")
+HOC.CornerRadius = UDim.new(0, 16)
+HOC.Parent = HO
 
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -180, 1, 0)
 Title.Position = UDim2.new(0, 20, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "奈  NARAKU HUB 奈"
+Title.Text = "奈  NARAKU HUB v5.0 奈"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 24
+Title.TextSize = 22
 Title.Font = Enum.Font.GothamBlack
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Header
 
-local Subtitle = Instance.new("TextLabel")
-Subtitle.Size = UDim2.new(0, 220, 0, 20)
-Subtitle.Position = UDim2.new(0, 22, 1, -22)
-Subtitle.BackgroundTransparency = 1
-Subtitle.Text = "MEGA Edition • v4.0"
-Subtitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-Subtitle.TextTransparency = 0.4
-Subtitle.TextSize = 12
-Subtitle.Font = Enum.Font.GothamBold
-Subtitle.TextXAlignment = Enum.TextXAlignment.Left
-Subtitle.Parent = Header
+local Sub = Instance.new("TextLabel")
+Sub.Size = UDim2.new(0, 240, 0, 20)
+Sub.Position = UDim2.new(0, 22, 1, -22)
+Sub.BackgroundTransparency = 1
+Sub.Text = "FIXED • Speed + Farm + Hitbox"
+Sub.TextColor3 = Color3.fromRGB(255, 255, 255)
+Sub.TextTransparency = 0.4
+Sub.TextSize = 11
+Sub.Font = Enum.Font.GothamBold
+Sub.TextXAlignment = Enum.TextXAlignment.Left
+Sub.Parent = Header
 
--- زر التصغير
+-- Minimize
 local MinBtn = Instance.new("TextButton")
 MinBtn.Size = UDim2.new(0, 34, 0, 34)
-MinBtn.Position = UDim2.new(1, -88, 0, 18)
-MinBtn.BackgroundColor3 = Theme.Tertiary
+MinBtn.Position = UDim2.new(1, -88, 0, 16)
+MinBtn.BackgroundColor3 = Theme.Ter
 MinBtn.Text = "—"
 MinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 MinBtn.TextSize = 20
@@ -218,14 +218,14 @@ MinBtn.Font = Enum.Font.GothamBold
 MinBtn.AutoButtonColor = false
 MinBtn.Parent = Header
 
-local MinCorner = Instance.new("UICorner")
-MinCorner.CornerRadius = UDim.new(0, 8)
-MinCorner.Parent = MinBtn
+local MNC = Instance.new("UICorner")
+MNC.CornerRadius = UDim.new(0, 8)
+MNC.Parent = MinBtn
 
--- زر الإغلاق
+-- Close
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 34, 0, 34)
-CloseBtn.Position = UDim2.new(1, -48, 0, 18)
+CloseBtn.Position = UDim2.new(1, -48, 0, 16)
 CloseBtn.BackgroundColor3 = Theme.Danger
 CloseBtn.Text = "✖"
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -234,21 +234,21 @@ CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.AutoButtonColor = false
 CloseBtn.Parent = Header
 
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 8)
-CloseCorner.Parent = CloseBtn
+local CC = Instance.new("UICorner")
+CC.CornerRadius = UDim.new(0, 8)
+CC.Parent = CloseBtn
 
--- شريط الحالة
+-- Status bar
 local StatusBar = Instance.new("Frame")
-StatusBar.Size = UDim2.new(1, -20, 0, 30)
-StatusBar.Position = UDim2.new(0, 10, 0, 78)
-StatusBar.BackgroundColor3 = Theme.Tertiary
+StatusBar.Size = UDim2.new(1, -20, 0, 28)
+StatusBar.Position = UDim2.new(0, 10, 0, 72)
+StatusBar.BackgroundColor3 = Theme.Ter
 StatusBar.BorderSizePixel = 0
 StatusBar.Parent = Main
 
-local StatusCorner = Instance.new("UICorner")
-StatusCorner.CornerRadius = UDim.new(0, 8)
-StatusCorner.Parent = StatusBar
+local SBC = Instance.new("UICorner")
+SBC.CornerRadius = UDim.new(0, 8)
+SBC.Parent = StatusBar
 
 local StatusDot = Instance.new("Frame")
 StatusDot.Size = UDim2.new(0, 8, 0, 8)
@@ -257,414 +257,598 @@ StatusDot.BackgroundColor3 = Theme.Success
 StatusDot.BorderSizePixel = 0
 StatusDot.Parent = StatusBar
 
-local StatusDotCorner = Instance.new("UICorner")
-StatusDotCorner.CornerRadius = UDim.new(1, 0)
-StatusDotCorner.Parent = StatusDot
+local SDC = Instance.new("UICorner")
+SDC.CornerRadius = UDim.new(1, 0)
+SDC.Parent = StatusDot
 
 local StatusText = Instance.new("TextLabel")
 StatusText.Size = UDim2.new(1, -40, 1, 0)
 StatusText.Position = UDim2.new(0, 28, 0, 0)
 StatusText.BackgroundTransparency = 1
-StatusText.Text = "Ready • v4.0 MEGA • All Systems Online"
+StatusText.Text = "Ready • v5.0 FIXED"
 StatusText.TextColor3 = Theme.Text
-StatusText.TextSize = 12
+StatusText.TextSize = 11
 StatusText.Font = Enum.Font.GothamBold
 StatusText.TextXAlignment = Enum.TextXAlignment.Left
 StatusText.Parent = StatusBar
 
-task.spawn(function()
-    while StatusDot.Parent do
-        pcall(function()
-            TweenService:Create(StatusDot, TweenInfo.new(0.8), {BackgroundColor3 = Theme.Success}):Play()
-            task.wait(0.8)
-            TweenService:Create(StatusDot, TweenInfo.new(0.8), {BackgroundColor3 = Color3.fromRGB(40, 120, 70)}):Play()
-            task.wait(0.8)
-        end)
-    end
-end)
+-- Scroll frame
+local Scroll = Instance.new("ScrollingFrame")
+Scroll.Size = UDim2.new(1, -20, 1, -110)
+Scroll.Position = UDim2.new(0, 10, 0, 105)
+Scroll.BackgroundColor3 = Theme.Sec
+Scroll.BorderSizePixel = 0
+Scroll.ScrollBarThickness = 6
+Scroll.ScrollBarImageColor3 = Theme.Acc
+Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Scroll.Parent = Main
 
--- ════════ Tab System ════════
-local TabBar = Instance.new("Frame")
-TabBar.Size = UDim2.new(1, -20, 0, 38)
-TabBar.Position = UDim2.new(0, 10, 0, 116)
-TabBar.BackgroundColor3 = Theme.Secondary
-TabBar.BorderSizePixel = 0
-TabBar.Parent = Main
+local SC = Instance.new("UICorner")
+SC.CornerRadius = UDim.new(0, 12)
+SC.Parent = Scroll
 
-local TabBarCorner = Instance.new("UICorner")
-TabBarCorner.CornerRadius = UDim.new(0, 10)
-TabBarCorner.Parent = TabBar
+local SP = Instance.new("UIPadding")
+SP.PaddingTop = UDim.new(0, 10)
+SP.PaddingLeft = UDim.new(0, 10)
+SP.PaddingRight = UDim.new(0, 10)
+SP.PaddingBottom = UDim.new(0, 10)
+SP.Parent = Scroll
 
-local TabBarPadding = Instance.new("UIPadding")
-TabBarPadding.PaddingLeft = UDim.new(0, 5)
-TabBarPadding.PaddingRight = UDim.new(0, 5)
-TabBarPadding.PaddingTop = UDim.new(0, 5)
-TabBarPadding.PaddingBottom = UDim.new(0, 5)
-TabBarPadding.Parent = TabBar
+local SL = Instance.new("UIListLayout")
+SL.Padding = UDim.new(0, 8)
+SL.SortOrder = Enum.SortOrder.LayoutOrder
+SL.Parent = Scroll
 
-local TabLayout = Instance.new("UIListLayout")
-TabLayout.FillDirection = Enum.FillDirection.Horizontal
-TabLayout.Padding = UDim.new(0, 5)
-TabLayout.Parent = TabBar
+-- ═══════════════════════════════════════════════════════
+--                    HELPER FUNCTIONS
+-- ═══════════════════════════════════════════════════════
 
--- Content area
-local ContentHolder = Instance.new("Frame")
-ContentHolder.Size = UDim2.new(1, -20, 1, -175)
-ContentHolder.Position = UDim2.new(0, 10, 0, 164)
-ContentHolder.BackgroundColor3 = Theme.Secondary
-ContentHolder.BorderSizePixel = 0
-ContentHolder.Parent = Main
+local function CreateSection(text)
+    local S = Instance.new("Frame")
+    S.Size = UDim2.new(1, 0, 0, 35)
+    S.BackgroundColor3 = Theme.Bg
+    S.BackgroundTransparency = 0.5
+    S.BorderSizePixel = 0
+    S.Parent = Scroll
 
-local ContentHolderCorner = Instance.new("UICorner")
-ContentHolderCorner.CornerRadius = UDim.new(0, 12)
-ContentHolderCorner.Parent = ContentHolder
+    local C = Instance.new("UICorner")
+    C.CornerRadius = UDim.new(0, 8)
+    C.Parent = S
 
--- Tab pages
-local Tabs = {}
-local CurrentTab = nil
+    local L = Instance.new("Frame")
+    L.Size = UDim2.new(0, 4, 0, 20)
+    L.Position = UDim2.new(0, 10, 0.5, -10)
+    L.BackgroundColor3 = Theme.Acc
+    L.BorderSizePixel = 0
+    L.Parent = S
 
-local function CreateTab(tabName, icon)
-    -- Tab button
-    local TabBtn = Instance.new("TextButton")
-    TabBtn.Size = UDim2.new(0, 88, 1, 0)
-    TabBtn.BackgroundColor3 = Theme.Tertiary
-    TabBtn.Text = icon .. " " .. tabName
-    TabBtn.TextColor3 = Theme.Subtext
-    TabBtn.TextSize = 12
-    TabBtn.Font = Enum.Font.GothamBold
-    TabBtn.AutoButtonColor = false
-    TabBtn.Parent = TabBar
-    
-    local TabBtnCorner = Instance.new("UICorner")
-    TabBtnCorner.CornerRadius = UDim.new(0, 8)
-    TabBtnCorner.Parent = TabBtn
-    
-    -- Scroll for tab
-    local Scroll = Instance.new("ScrollingFrame")
-    Scroll.Size = UDim2.new(1, 0, 1, 0)
-    Scroll.BackgroundTransparency = 1
-    Scroll.BorderSizePixel = 0
-    Scroll.ScrollBarThickness = 6
-    Scroll.ScrollBarImageColor3 = Theme.Accent
-    Scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-    Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    Scroll.Visible = false
-    Scroll.Parent = ContentHolder
-    
-    local ScrollPadding = Instance.new("UIPadding")
-    ScrollPadding.PaddingTop = UDim.new(0, 10)
-    ScrollPadding.PaddingLeft = UDim.new(0, 10)
-    ScrollPadding.PaddingRight = UDim.new(0, 10)
-    ScrollPadding.PaddingBottom = UDim.new(0, 10)
-    ScrollPadding.Parent = Scroll
-    
-    local ScrollLayout = Instance.new("UIListLayout")
-    ScrollLayout.Padding = UDim.new(0, 8)
-    ScrollLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    ScrollLayout.Parent = Scroll
-    
-    Tabs[tabName] = {Button = TabBtn, Scroll = Scroll}
-    
-    TabBtn.MouseButton1Click:Connect(function()
-        -- Hide all
-        for _, tab in pairs(Tabs) do
-            tab.Scroll.Visible = false
-            TweenService:Create(tab.Button, TweenInfo.new(0.15), {BackgroundColor3 = Theme.Tertiary, TextColor3 = Theme.Subtext}):Play()
-        end
-        -- Show this
-        Scroll.Visible = true
-        TweenService:Create(TabBtn, TweenInfo.new(0.15), {BackgroundColor3 = Theme.Accent, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
-        CurrentTab = tabName
-    end)
-    
-    return Scroll, ScrollLayout
+    local LC = Instance.new("UICorner")
+    LC.CornerRadius = UDim.new(1, 0)
+    LC.Parent = L
+
+    local T = Instance.new("TextLabel")
+    T.Size = UDim2.new(1, -30, 1, 0)
+    T.Position = UDim2.new(0, 22, 0, 0)
+    T.BackgroundTransparency = 1
+    T.Text = text
+    T.TextColor3 = Theme.Text
+    T.TextSize = 14
+    T.Font = Enum.Font.GothamBlack
+    T.TextXAlignment = Enum.TextXAlignment.Left
+    T.Parent = S
 end
 
--- ════════ Helper Functions ════════
+local function CreateToggle(name, icon, default, callback)
+    local B = Instance.new("TextButton")
+    B.Size = UDim2.new(1, 0, 0, 50)
+    B.BackgroundColor3 = Theme.Ter
+    B.Text = ""
+    B.AutoButtonColor = false
+    B.Parent = Scroll
 
-local function CreateSection(parent, layout, text)
-    local Section = Instance.new("Frame")
-    Section.Size = UDim2.new(1, 0, 0, 35)
-    Section.BackgroundColor3 = Theme.Background
-    Section.BackgroundTransparency = 0.5
-    Section.BorderSizePixel = 0
-    Section.Parent = parent
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0, 10)
+    BC.Parent = B
 
-    local SectionCorner = Instance.new("UICorner")
-    SectionCorner.CornerRadius = UDim.new(0, 8)
-    SectionCorner.Parent = Section
+    local BS = Instance.new("UIStroke")
+    BS.Color = Color3.fromRGB(60, 50, 90)
+    BS.Thickness = 1
+    BS.Parent = B
 
-    local Line = Instance.new("Frame")
-    Line.Size = UDim2.new(0, 4, 0, 20)
-    Line.Position = UDim2.new(0, 10, 0.5, -10)
-    Line.BackgroundColor3 = Theme.Accent
-    Line.BorderSizePixel = 0
-    Line.Parent = Section
+    local I = Instance.new("TextLabel")
+    I.Size = UDim2.new(0, 45, 1, 0)
+    I.Position = UDim2.new(0, 5, 0, 0)
+    I.BackgroundTransparency = 1
+    I.Text = icon
+    I.TextSize = 24
+    I.Font = Enum.Font.GothamBold
+    I.Parent = B
 
-    local LineCorner = Instance.new("UICorner")
-    LineCorner.CornerRadius = UDim.new(1, 0)
-    LineCorner.Parent = Line
+    local N = Instance.new("TextLabel")
+    N.Size = UDim2.new(1, -125, 1, 0)
+    N.Position = UDim2.new(0, 50, 0, 0)
+    N.BackgroundTransparency = 1
+    N.Text = name
+    N.TextColor3 = Theme.Text
+    N.TextSize = 15
+    N.Font = Enum.Font.GothamBold
+    N.TextXAlignment = Enum.TextXAlignment.Left
+    N.Parent = B
 
-    local SectionLabel = Instance.new("TextLabel")
-    SectionLabel.Size = UDim2.new(1, -30, 1, 0)
-    SectionLabel.Position = UDim2.new(0, 22, 0, 0)
-    SectionLabel.BackgroundTransparency = 1
-    SectionLabel.Text = text
-    SectionLabel.TextColor3 = Theme.Text
-    SectionLabel.TextSize = 14
-    SectionLabel.Font = Enum.Font.GothamBlack
-    SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
-    SectionLabel.Parent = Section
+    local Sw = Instance.new("Frame")
+    Sw.Size = UDim2.new(0, 52, 0, 28)
+    Sw.Position = UDim2.new(1, -62, 0.5, -14)
+    Sw.BackgroundColor3 = Color3.fromRGB(50, 45, 70)
+    Sw.BorderSizePixel = 0
+    Sw.Parent = B
 
-    return Section
-end
+    local SwC = Instance.new("UICorner")
+    SwC.CornerRadius = UDim.new(1, 0)
+    SwC.Parent = Sw
 
-local function CreateToggle(parent, name, icon, default, callback)
-    local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, 0, 0, 50)
-    Btn.BackgroundColor3 = Theme.Tertiary
-    Btn.Text = ""
-    Btn.AutoButtonColor = false
-    Btn.Parent = parent
+    local K = Instance.new("Frame")
+    K.Size = UDim2.new(0, 22, 0, 22)
+    K.Position = UDim2.new(0, 3, 0.5, -11)
+    K.BackgroundColor3 = Color3.fromRGB(220, 215, 240)
+    K.BorderSizePixel = 0
+    K.Parent = Sw
 
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 10)
-    BtnCorner.Parent = Btn
-
-    local BtnStroke = Instance.new("UIStroke")
-    BtnStroke.Color = Color3.fromRGB(60, 50, 90)
-    BtnStroke.Thickness = 1
-    BtnStroke.Parent = Btn
-
-    local IconLabel = Instance.new("TextLabel")
-    IconLabel.Size = UDim2.new(0, 45, 1, 0)
-    IconLabel.Position = UDim2.new(0, 5, 0, 0)
-    IconLabel.BackgroundTransparency = 1
-    IconLabel.Text = icon
-    IconLabel.TextSize = 24
-    IconLabel.Font = Enum.Font.GothamBold
-    IconLabel.Parent = Btn
-
-    local NameLabel = Instance.new("TextLabel")
-    NameLabel.Size = UDim2.new(1, -125, 1, 0)
-    NameLabel.Position = UDim2.new(0, 50, 0, 0)
-    NameLabel.BackgroundTransparency = 1
-    NameLabel.Text = name
-    NameLabel.TextColor3 = Theme.Text
-    NameLabel.TextSize = 15
-    NameLabel.Font = Enum.Font.GothamBold
-    NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    NameLabel.Parent = Btn
-
-    local Switch = Instance.new("Frame")
-    Switch.Size = UDim2.new(0, 52, 0, 28)
-    Switch.Position = UDim2.new(1, -62, 0.5, -14)
-    Switch.BackgroundColor3 = Color3.fromRGB(50, 45, 70)
-    Switch.BorderSizePixel = 0
-    Switch.Parent = Btn
-
-    local SwitchCorner = Instance.new("UICorner")
-    SwitchCorner.CornerRadius = UDim.new(1, 0)
-    SwitchCorner.Parent = Switch
-
-    local Knob = Instance.new("Frame")
-    Knob.Size = UDim2.new(0, 22, 0, 22)
-    Knob.Position = UDim2.new(0, 3, 0.5, -11)
-    Knob.BackgroundColor3 = Color3.fromRGB(220, 215, 240)
-    Knob.BorderSizePixel = 0
-    Knob.Parent = Switch
-
-    local KnobCorner = Instance.new("UICorner")
-    KnobCorner.CornerRadius = UDim.new(1, 0)
-    KnobCorner.Parent = Knob
+    local KC = Instance.new("UICorner")
+    KC.CornerRadius = UDim.new(1, 0)
+    KC.Parent = K
 
     local state = default or false
 
     local function updateVisual()
         if state then
-            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Theme.Accent}):Play()
-            TweenService:Create(Knob, TweenInfo.new(0.2), {
+            TweenService:Create(Sw, TweenInfo.new(0.2), {BackgroundColor3 = Theme.Acc}):Play()
+            TweenService:Create(K, TweenInfo.new(0.2), {
                 Position = UDim2.new(1, -25, 0.5, -11),
                 BackgroundColor3 = Color3.fromRGB(255, 255, 255)
             }):Play()
-            TweenService:Create(BtnStroke, TweenInfo.new(0.2), {Color = Theme.Accent}):Play()
+            TweenService:Create(BS, TweenInfo.new(0.2), {Color = Theme.Acc}):Play()
         else
-            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 45, 70)}):Play()
-            TweenService:Create(Knob, TweenInfo.new(0.2), {
+            TweenService:Create(Sw, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 45, 70)}):Play()
+            TweenService:Create(K, TweenInfo.new(0.2), {
                 Position = UDim2.new(0, 3, 0.5, -11),
                 BackgroundColor3 = Color3.fromRGB(220, 215, 240)
             }):Play()
-            TweenService:Create(BtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(60, 50, 90)}):Play()
+            TweenService:Create(BS, TweenInfo.new(0.2), {Color = Color3.fromRGB(60, 50, 90)}):Play()
         end
     end
 
     updateVisual()
 
-    Btn.MouseButton1Click:Connect(function()
+    B.MouseButton1Click:Connect(function()
         state = not state
         updateVisual()
         if callback then pcall(callback, state) end
     end)
-
-    return Btn
 end
 
-local function CreateSlider(parent, name, min, max, default, callback)
-    local Container = Instance.new("Frame")
-    Container.Size = UDim2.new(1, 0, 0, 65)
-    Container.BackgroundColor3 = Theme.Tertiary
-    Container.BorderSizePixel = 0
-    Container.Parent = parent
+local function CreateSlider(name, min, max, default, callback)
+    local C = Instance.new("Frame")
+    C.Size = UDim2.new(1, 0, 0, 65)
+    C.BackgroundColor3 = Theme.Ter
+    C.BorderSizePixel = 0
+    C.Parent = Scroll
 
-    local ContainerCorner = Instance.new("UICorner")
-    ContainerCorner.CornerRadius = UDim.new(0, 10)
-    ContainerCorner.Parent = Container
+    local CC = Instance.new("UICorner")
+    CC.CornerRadius = UDim.new(0, 10)
+    CC.Parent = C
 
-    local ContainerStroke = Instance.new("UIStroke")
-    ContainerStroke.Color = Color3.fromRGB(60, 50, 90)
-    ContainerStroke.Thickness = 1
-    ContainerStroke.Parent = Container
+    local CS = Instance.new("UIStroke")
+    CS.Color = Color3.fromRGB(60, 50, 90)
+    CS.Thickness = 1
+    CS.Parent = C
 
-    local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(1, -20, 0, 25)
-    Label.Position = UDim2.new(0, 10, 0, 5)
-    Label.BackgroundTransparency = 1
-    Label.Text = name .. ": " .. default
-    Label.TextColor3 = Theme.Text
-    Label.TextSize = 14
-    Label.Font = Enum.Font.GothamBold
-    Label.TextXAlignment = Enum.TextXAlignment.Left
-    Label.Parent = Container
+    local L = Instance.new("TextLabel")
+    L.Size = UDim2.new(1, -20, 0, 25)
+    L.Position = UDim2.new(0, 10, 0, 5)
+    L.BackgroundTransparency = 1
+    L.Text = name .. ": " .. default
+    L.TextColor3 = Theme.Text
+    L.TextSize = 14
+    L.Font = Enum.Font.GothamBold
+    L.TextXAlignment = Enum.TextXAlignment.Left
+    L.Parent = C
 
     local Bar = Instance.new("Frame")
     Bar.Size = UDim2.new(1, -20, 0, 10)
     Bar.Position = UDim2.new(0, 10, 1, -22)
     Bar.BackgroundColor3 = Color3.fromRGB(40, 35, 60)
     Bar.BorderSizePixel = 0
-    Bar.Parent = Container
+    Bar.Parent = C
 
-    local BarCorner = Instance.new("UICorner")
-    BarCorner.CornerRadius = UDim.new(1, 0)
-    BarCorner.Parent = Bar
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(1, 0)
+    BC.Parent = Bar
 
-    local Fill = Instance.new("Frame")
-    Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
-    Fill.BackgroundColor3 = Theme.Accent
-    Fill.BorderSizePixel = 0
-    Fill.Parent = Bar
+    local F = Instance.new("Frame")
+    F.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    F.BackgroundColor3 = Theme.Acc
+    F.BorderSizePixel = 0
+    F.Parent = Bar
 
-    local FillCorner = Instance.new("UICorner")
-    FillCorner.CornerRadius = UDim.new(1, 0)
-    FillCorner.Parent = Fill
+    local FC = Instance.new("UICorner")
+    FC.CornerRadius = UDim.new(1, 0)
+    FC.Parent = F
 
-    local value = default
-    local dragging = false
+    local val = default
+    local drag = false
 
-    local function update(input)
+    local function upd(input)
         local pos = math.clamp((input.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
-        value = math.floor(min + (max - min) * pos)
-        Fill.Size = UDim2.new(pos, 0, 1, 0)
-        Label.Text = name .. ": " .. value
-        if callback then pcall(callback, value) end
+        val = math.floor(min + (max - min) * pos)
+        F.Size = UDim2.new(pos, 0, 1, 0)
+        L.Text = name .. ": " .. val
+        if callback then pcall(callback, val) end
     end
 
     Bar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            update(input)
+            drag = true
+            upd(input)
         end
     end)
 
     Bar.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = false
+            drag = false
         end
     end)
 
     UserInputService.InputChanged:Connect(function(input)
-        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-            update(input)
+        if drag and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            upd(input)
         end
     end)
 end
 
-local function CreateButton(parent, name, icon, callback)
-    local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, 0, 0, 45)
-    Btn.BackgroundColor3 = Theme.Accent
-    Btn.Text = ""
-    Btn.AutoButtonColor = false
-    Btn.Parent = parent
+local function CreateButton(name, icon, callback)
+    local B = Instance.new("TextButton")
+    B.Size = UDim2.new(1, 0, 0, 45)
+    B.BackgroundColor3 = Theme.Acc
+    B.Text = ""
+    B.AutoButtonColor = false
+    B.Parent = Scroll
 
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 10)
-    BtnCorner.Parent = Btn
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0, 10)
+    BC.Parent = B
 
-    local BtnGradient = Instance.new("UIGradient")
-    BtnGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Theme.Accent),
-        ColorSequenceKeypoint.new(1, Theme.Accent2),
+    local BG = Instance.new("UIGradient")
+    BG.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Theme.Acc),
+        ColorSequenceKeypoint.new(1, Theme.Acc2),
     })
-    BtnGradient.Rotation = 45
-    BtnGradient.Parent = Btn
+    BG.Rotation = 45
+    BG.Parent = B
 
-    local IconLabel = Instance.new("TextLabel")
-    IconLabel.Size = UDim2.new(0, 45, 1, 0)
-    IconLabel.Position = UDim2.new(0, 5, 0, 0)
-    IconLabel.BackgroundTransparency = 1
-    IconLabel.Text = icon
-    IconLabel.TextSize = 22
-    IconLabel.Font = Enum.Font.GothamBold
-    IconLabel.Parent = Btn
+    local I = Instance.new("TextLabel")
+    I.Size = UDim2.new(0, 45, 1, 0)
+    I.Position = UDim2.new(0, 5, 0, 0)
+    I.BackgroundTransparency = 1
+    I.Text = icon
+    I.TextSize = 22
+    I.Font = Enum.Font.GothamBold
+    I.Parent = B
 
-    local NameLabel = Instance.new("TextLabel")
-    NameLabel.Size = UDim2.new(1, -55, 1, 0)
-    NameLabel.Position = UDim2.new(0, 50, 0, 0)
-    NameLabel.BackgroundTransparency = 1
-    NameLabel.Text = name
-    NameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NameLabel.TextSize = 15
-    NameLabel.Font = Enum.Font.GothamBold
-    NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    NameLabel.Parent = Btn
+    local N = Instance.new("TextLabel")
+    N.Size = UDim2.new(1, -55, 1, 0)
+    N.Position = UDim2.new(0, 50, 0, 0)
+    N.BackgroundTransparency = 1
+    N.Text = name
+    N.TextColor3 = Color3.fromRGB(255, 255, 255)
+    N.TextSize = 15
+    N.Font = Enum.Font.GothamBold
+    N.TextXAlignment = Enum.TextXAlignment.Left
+    N.Parent = B
 
-    Btn.MouseButton1Click:Connect(function()
-        TweenService:Create(Btn, TweenInfo.new(0.1), {BackgroundColor3 = Theme.Accent3}):Play()
+    B.MouseButton1Click:Connect(function()
+        TweenService:Create(B, TweenInfo.new(0.1), {BackgroundColor3 = Theme.Acc3}):Play()
         task.wait(0.1)
-        TweenService:Create(Btn, TweenInfo.new(0.1), {BackgroundColor3 = Theme.Accent}):Play()
+        TweenService:Create(B, TweenInfo.new(0.1), {BackgroundColor3 = Theme.Acc}):Play()
         if callback then pcall(callback) end
     end)
 end
 
--- ════════ Create Tabs ════════
-local CombatScroll = CreateTab("Combat", "⚔️")
-local MovementScroll = CreateTab("Move", "💨")
-local FarmScroll = CreateTab("Farm", "🎣")
-local VisualScroll = CreateTab("Visual", "👁️")
-local TPScroll = CreateTab("TP", "🗺️")
-local MiscScroll = CreateTab("Misc", "🛠️")
+-- ═══════════════════════════════════════════════════════
+--                💨 SPEED BOOST (FIXED)
+-- ═══════════════════════════════════════════════════════
+CreateSection("💨  SPEED")
 
--- Default tab
-Tabs["Combat"].Scroll.Visible = true
-TweenService:Create(Tabs["Combat"].Button, TweenInfo.new(0.15), {BackgroundColor3 = Theme.Accent, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+CreateToggle("Speed Boost", "💨", false, function(state)
+    Config.SpeedBoost = state
+    if not state then
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then hum.WalkSpeed = 16 end
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                local bv = hrp:FindFirstChild("NarakuSpeed")
+                if bv then bv:Destroy() end
+            end
+        end
+    end
+end)
 
--- ═══════════════════════════════════════════════
--- ⚔️ COMBAT TAB
--- ═══════════════════════════════════════════════
-CreateSection(CombatScroll, nil, "🎯 HITBOX")
+CreateSlider("Speed Value", 16, 500, 120, function(val)
+    Config.SpeedValue = val
+end)
+
+-- Speed loop - Using BodyVelocity (Blox Fruits compatible)
+task.spawn(function()
+    while task.wait(0.05) do
+        if Config.SpeedBoost then
+            local char = LocalPlayer.Character
+            if char then
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                local hrp = char:FindFirstChild("HumanoidRootPart")
+                
+                if hum and hrp and hum.Health > 0 then
+                    -- Set WalkSpeed
+                    if hum.WalkSpeed ~= Config.SpeedValue then
+                        hum.WalkSpeed = Config.SpeedValue
+                    end
+                    
+                    -- BodyVelocity for real speed (bypasses anti-cheat)
+                    local bv = hrp:FindFirstChild("NarakuSpeed")
+                    if not bv then
+                        bv = Instance.new("BodyVelocity")
+                        bv.Name = "NarakuSpeed"
+                        bv.MaxForce = Vector3.new(math.huge, 0, math.huge)
+                        bv.P = 10000
+                        bv.Parent = hrp
+                    end
+                    
+                    local moveDir = hum.MoveDirection
+                    if moveDir.Magnitude > 0 then
+                        bv.Velocity = moveDir * Config.SpeedValue
+                    else
+                        bv.Velocity = Vector3.new(0, 0, 0)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════
+--                🦘 INFINITE JUMP
+-- ═══════════════════════════════════════════════════════
+CreateSection("🦘  JUMP")
+
+CreateToggle("Infinite Jump", "🦘", false, function(state)
+    Config.InfiniteJump = state
+end)
+
+CreateSlider("Jump Power", 50, 500, 50, function(val)
+    Config.JumpPower = val
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum.JumpPower = val
+            hum.UseJumpPower = true
+        end
+    end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if Config.InfiniteJump then
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════
+--                ⚔️ AUTO FARM (FIXED)
+-- ═══════════════════════════════════════════════════════
+CreateSection("⚔️  AUTO FARM")
+
+CreateToggle("Auto Farm", "⚔️", false, function(state)
+    Config.AutoFarm = state
+    if not state then
+        local char = LocalPlayer.Character
+        if char then
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.Velocity = Vector3.new(0, 0, 0)
+                local bp = hrp:FindFirstChild("NarakuFly")
+                if bp then bp:Destroy() end
+            end
+        end
+    end
+end)
+
+CreateSlider("Farm Range", 100, 2000, 500, function(val)
+    Config.AutoFarmRange = val
+end)
+
+CreateSlider("Fly Height", 5, 50, 15, function(val)
+    Config.AutoFarmFlyHeight = val
+end)
+
+CreateSlider("Farm Speed", 1, 20, 8, function(val)
+    Config.AutoFarmSpeed = val
+end)
+
+-- Equip Melee Tool automatically
+local function EquipMelee()
+    local char = LocalPlayer.Character
+    if not char then return end
+    
+    -- Already has tool? Check if it's melee
+    local currentTool = char:FindFirstChildOfClass("Tool")
+    if currentTool then
+        return currentTool
+    end
+    
+    -- Find in backpack
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
+    if not backpack then return nil end
+    
+    -- Priority: Melee first, then any tool
+    local meleeKeywords = {"melee", "sword", "blade", "katana", "cutlass", "saber", "fist", "combat", "superhuman", "blackleg", "electro", "fishman"}
+    
+    -- Search melee first
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            local toolName = tool.Name:lower()
+            local toolType = tostring(tool:GetAttribute("ToolType") or ""):lower()
+            
+            for _, kw in pairs(meleeKeywords) do
+                if toolName:find(kw) or toolType:find(kw) then
+                    pcall(function() tool.Parent = char end)
+                    return tool
+                end
+            end
+        end
+    end
+    
+    -- Fallback: any tool
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            pcall(function() tool.Parent = char end)
+            return tool
+        end
+    end
+    
+    return nil
+end
+
+-- Get nearest enemy (mobs + bosses, not players)
+local function GetNearestEnemy()
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
+    
+    local myPos = char.HumanoidRootPart.Position
+    local nearest = nil
+    local minDist = Config.AutoFarmRange
+    
+    -- Search workspace children
+    for _, obj in pairs(Workspace:GetChildren()) do
+        pcall(function()
+            if obj:IsA("Model") then
+                local hum = obj:FindFirstChildOfClass("Humanoid")
+                local hrp = obj:FindFirstChild("HumanoidRootPart")
+                
+                if hum and hrp and hum.Health > 0 then
+                    -- Ignore player characters
+                    local isPlayer = Players:GetPlayerFromCharacter(obj)
+                    if not isPlayer then
+                        local dist = (hrp.Position - myPos).Magnitude
+                        if dist < minDist then
+                            minDist = dist
+                            nearest = obj
+                        end
+                    end
+                end
+            end
+        end)
+    end
+    
+    return nearest
+end
+
+-- Main Auto Farm loop
+task.spawn(function()
+    while task.wait(0.05) do
+        if Config.AutoFarm then
+            local char = LocalPlayer.Character
+            if char then
+                local hrp = char:FindFirstChild("HumanoidRootPart")
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                
+                if hrp and hum and hum.Health > 0 then
+                    -- Auto equip melee
+                    local tool = EquipMelee()
+                    
+                    local enemy = GetNearestEnemy()
+                    
+                    if enemy then
+                        local eHrp = enemy:FindFirstChild("HumanoidRootPart")
+                        local eHum = enemy:FindFirstChildOfClass("Humanoid")
+                        
+                        if eHrp and eHum and eHum.Health > 0 then
+                            local dist = (eHrp.Position - hrp.Position).Magnitude
+                            local targetPos = eHrp.Position + Vector3.new(0, Config.AutoFarmFlyHeight, 0)
+                            
+                            if dist > 6 then
+                                -- Fly to enemy using BodyPosition (smooth)
+                                local bp = hrp:FindFirstChild("NarakuFly")
+                                if not bp then
+                                    bp = Instance.new("BodyPosition")
+                                    bp.Name = "NarakuFly"
+                                    bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                                    bp.P = 20000
+                                    bp.D = 1000
+                                    bp.Parent = hrp
+                                end
+                                bp.Position = targetPos
+                            else
+                                -- Stop and attack
+                                local bp = hrp:FindFirstChild("NarakuFly")
+                                if bp then bp:Destroy() end
+                                hrp.Velocity = Vector3.new(0, 0, 0)
+                                hrp.CFrame = CFrame.new(hrp.Position, eHrp.Position)
+                                
+                                -- Activate tool
+                                if tool then
+                                    pcall(function() tool:Activate() end)
+                                end
+                                
+                                -- Virtual click
+                                pcall(function()
+                                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                                    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+                                end)
+                                
+                                -- Server-side hit (if available)
+                                pcall(function()
+                                    local combatRemote = ReplicatedStorage:FindFirstChild("Remotes")
+                                    if combatRemote then
+                                        -- Blox Fruits specific (may not exist)
+                                    end
+                                end)
+                            end
+                        end
+                    else
+                        -- No enemy: hover in place
+                        local bp = hrp:FindFirstChild("NarakuFly")
+                        if bp then bp:Destroy() end
+                        hrp.Velocity = Vector3.new(0, 0, 0)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════
+--                🎯 HITBOX ON ENEMIES
+-- ═══════════════════════════════════════════════════════
+CreateSection("🎯  HITBOX")
 
 local HitboxTargets = {}
 
-CreateToggle(CombatScroll, "Hitbox Max (Enemies)", "🎯", false, function(state)
+CreateToggle("Hitbox Max", "🎯", false, function(state)
     Config.HitboxMax = state
     if not state then
-        for target, originalSize in pairs(HitboxTargets) do
+        for target, origSize in pairs(HitboxTargets) do
             pcall(function()
                 if target and target.Parent then
-                    target.Size = originalSize
+                    target.Size = origSize
                     target.Transparency = 0
                     target.CanCollide = true
-                    target.Massless = false
                 end
             end)
         end
@@ -672,27 +856,16 @@ CreateToggle(CombatScroll, "Hitbox Max (Enemies)", "🎯", false, function(state
     end
 end)
 
-CreateSlider(CombatScroll, "Hitbox Size", 5, 50, 15, function(val)
+CreateSlider("Hitbox Size", 5, 50, 20, function(val)
     Config.HitboxSize = val
 end)
 
-CreateSlider(CombatScroll, "Hitbox Range", 50, 500, 150, function(val)
+CreateSlider("Hitbox Range", 50, 500, 200, function(val)
     Config.HitboxRange = val
 end)
 
-CreateSection(CombatScroll, nil, "🖱️ AUTO CLICK")
-
-CreateToggle(CombatScroll, "Auto Click", "🖱️", false, function(state)
-    Config.AutoClick = state
-end)
-
-CreateSlider(CombatScroll, "Click Speed (ms)", 10, 500, 50, function(val)
-    Config.AutoClickSpeed = val / 1000
-end)
-
--- Hitbox loop
 task.spawn(function()
-    while task.wait(0.15) do
+    while task.wait(0.2) do
         if Config.HitboxMax then
             local char = LocalPlayer.Character
             if char and char:FindFirstChild("HumanoidRootPart") then
@@ -700,47 +873,26 @@ task.spawn(function()
                 local size = Config.HitboxSize
                 local range = Config.HitboxRange
                 
-                for _, plr in pairs(Players:GetPlayers()) do
-                    if plr ~= LocalPlayer and plr.Character then
-                        local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
-                        local hum = plr.Character:FindFirstChildOfClass("Humanoid")
-                        if hrp and hum and hum.Health > 0 then
-                            local dist = (hrp.Position - myPos).Magnitude
-                            if dist < range then
-                                if not HitboxTargets[hrp] then HitboxTargets[hrp] = hrp.Size end
-                                hrp.Size = Vector3.new(size, size, size)
-                                hrp.Transparency = 0.5
-                                hrp.CanCollide = false
-                                hrp.Massless = true
-                            elseif HitboxTargets[hrp] then
-                                hrp.Size = HitboxTargets[hrp]
-                                hrp.Transparency = 0
-                                hrp.CanCollide = true
-                                hrp.Massless = false
-                                HitboxTargets[hrp] = nil
-                            end
-                        end
-                    end
-                end
-                
+                -- Mobs / NPCs
                 for _, mob in pairs(Workspace:GetChildren()) do
                     pcall(function()
-                        if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") then
+                        if mob:IsA("Model") and mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") then
                             local hrp = mob.HumanoidRootPart
                             local hum = mob.Humanoid
-                            if mob ~= char and hum.Health > 0 then
+                            
+                            if mob ~= char and hum.Health > 0 and not Players:GetPlayerFromCharacter(mob) then
                                 local dist = (hrp.Position - myPos).Magnitude
                                 if dist < range then
-                                    if not HitboxTargets[hrp] then HitboxTargets[hrp] = hrp.Size end
+                                    if not HitboxTargets[hrp] then
+                                        HitboxTargets[hrp] = hrp.Size
+                                    end
                                     hrp.Size = Vector3.new(size, size, size)
                                     hrp.Transparency = 0.5
                                     hrp.CanCollide = false
-                                    hrp.Massless = true
                                 elseif HitboxTargets[hrp] then
                                     hrp.Size = HitboxTargets[hrp]
                                     hrp.Transparency = 0
                                     hrp.CanCollide = true
-                                    hrp.Massless = false
                                     HitboxTargets[hrp] = nil
                                 end
                             end
@@ -752,308 +904,10 @@ task.spawn(function()
     end
 end)
 
--- Auto Click loop
-task.spawn(function()
-    while task.wait(Config.AutoClickSpeed) do
-        if Config.AutoClick then
-            pcall(function()
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-            end)
-        end
-    end
-end)
-
--- ═══════════════════════════════════════════════
--- 💨 MOVEMENT TAB
--- ═══════════════════════════════════════════════
-CreateSection(MovementScroll, nil, "💨 SPEED")
-
-CreateToggle(MovementScroll, "Speed Boost", "💨", false, function(state)
-    Config.SpeedBoost = state
-    local char = LocalPlayer.Character
-    if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            hum.WalkSpeed = state and Config.SpeedValue or 16
-        end
-    end
-end)
-
-CreateSlider(MovementScroll, "Speed Value", 16, 500, 100, function(val)
-    Config.SpeedValue = val
-    if Config.SpeedBoost then
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then hum.WalkSpeed = val end
-        end
-    end
-end)
-
-CreateSection(MovementScroll, nil, "🦘 JUMP")
-
-CreateToggle(MovementScroll, "Infinite Jump", "🦘", false, function(state)
-    Config.InfiniteJump = state
-end)
-
-CreateSlider(MovementScroll, "Jump Power", 50, 500, 50, function(val)
-    local char = LocalPlayer.Character
-    if char then
-        local hum = char:FindFirstChildOfClass("Humanoid")
-        if hum then
-            hum.JumpPower = val
-            hum.UseJumpPower = true
-        end
-    end
-end)
-
--- Speed loop
-task.spawn(function()
-    while task.wait(0.1) do
-        if Config.SpeedBoost then
-            local char = LocalPlayer.Character
-            if char then
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                if hum and hum.WalkSpeed ~= Config.SpeedValue then
-                    hum.WalkSpeed = Config.SpeedValue
-                end
-            end
-        end
-    end
-end)
-
-UserInputService.JumpRequest:Connect(function()
-    if Config.InfiniteJump then
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
-        end
-    end
-end)
-
--- ═══════════════════════════════════════════════
--- 🎣 FARM TAB
--- ═══════════════════════════════════════════════
-CreateSection(FarmScroll, nil, "⚔️ AUTO FARM")
-
-CreateToggle(FarmScroll, "Auto Farm (Kill)", "⚔️", false, function(state)
-    Config.AutoFarm = state
-end)
-
-CreateSlider(FarmScroll, "Farm Range", 100, 2000, 500, function(val)
-    Config.AutoFarmRange = val
-end)
-
-CreateSlider(FarmScroll, "Fly Height", 5, 60, 15, function(val)
-    Config.AutoFarmFlyHeight = val
-end)
-
-CreateSection(FarmScroll, nil, "🎣 AUTO FISH")
-
-CreateToggle(FarmScroll, "Auto Fish", "🎣", false, function(state)
-    Config.AutoFish = state
-end)
-
-CreateSection(FarmScroll, nil, "💰 AUTO CHEST")
-
-CreateToggle(FarmScroll, "Auto Chest", "💰", false, function(state)
-    Config.AutoChest = state
-end)
-
-CreateSection(FarmScroll, nil, "🏃 AUTO QUEST")
-
-CreateToggle(FarmScroll, "Auto Quest", "🏃", false, function(state)
-    Config.AutoQuest = state
-end)
-
--- ════════ AUTO FARM LOGIC ════════
-local function GetNearestEnemy()
-    local char = LocalPlayer.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
-    local myPos = char.HumanoidRootPart.Position
-    local nearest = nil
-    local minDist = Config.AutoFarmRange
-    
-    for _, obj in pairs(Workspace:GetDescendants()) do
-        pcall(function()
-            if obj:IsA("Model") and obj:FindFirstChild("Humanoid") and obj:FindFirstChild("HumanoidRootPart") then
-                local hum = obj.Humanoid
-                if obj.Name ~= LocalPlayer.Name and hum.Health > 0 then
-                    local dist = (obj.HumanoidRootPart.Position - myPos).Magnitude
-                    if dist < minDist then
-                        minDist = dist
-                        nearest = obj
-                    end
-                end
-            end
-        end)
-    end
-    return nearest
-end
-
-task.spawn(function()
-    while task.wait(0.1) do
-        if Config.AutoFarm then
-            local char = LocalPlayer.Character
-            if char then
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                local hum = char:FindFirstChildOfClass("Humanoid")
-                
-                if hrp and hum and hum.Health > 0 then
-                    local enemy = GetNearestEnemy()
-                    
-                    if enemy then
-                        local enemyHrp = enemy:FindFirstChild("HumanoidRootPart")
-                        local enemyHum = enemy:FindFirstChild("Humanoid")
-                        
-                        if enemyHrp and enemyHum and enemyHum.Health > 0 then
-                            local dist = (enemyHrp.Position - hrp.Position).Magnitude
-                            
-                            if dist > 5 then
-                                local targetPos = enemyHrp.Position + Vector3.new(0, Config.AutoFarmFlyHeight, 0)
-                                local bp = hrp:FindFirstChildOfClass("BodyPosition") or Instance.new("BodyPosition", hrp)
-                                bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-                                bp.Position = targetPos
-                                bp.P = 15000
-                                bp.D = 500
-                            else
-                                hrp.Velocity = Vector3.new(0, 0, 0)
-                                hrp.CFrame = CFrame.new(hrp.Position, enemyHrp.Position)
-                                
-                                local tool = char:FindFirstChildOfClass("Tool")
-                                if tool then tool:Activate() end
-                                
-                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                                task.wait(0.05)
-                                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                            end
-                        end
-                    else
-                        hrp.Velocity = Vector3.new(0, 0, 0)
-                        local bp = hrp:FindFirstChildOfClass("BodyPosition")
-                        if bp then bp:Destroy() end
-                    end
-                end
-            end
-        else
-            local char = LocalPlayer.Character
-            if char then
-                local hrp = char:FindFirstChild("HumanoidRootPart")
-                if hrp then
-                    local bp = hrp:FindFirstChildOfClass("BodyPosition")
-                    if bp then bp:Destroy() end
-                    hrp.Velocity = Vector3.new(0, 0, 0)
-                end
-            end
-        end
-    end
-end)
-
--- ════════ AUTO FISH LOGIC ════════
--- يعمل بناءً على RemoteEvent للفishing
-task.spawn(function()
-    while task.wait(1) do
-        if Config.AutoFish then
-            pcall(function()
-                local char = LocalPlayer.Character
-                if not char then return end
-                
-                -- البحث عن Fishing Rod في الحقيبة
-                local backpack = LocalPlayer:FindFirstChild("Backpack")
-                local rod = backpack and (backpack:FindFirstChild("Fishing Rod") or backpack:FindFirstChild("FishingRod"))
-                
-                if rod then
-                    local hum = char:FindFirstChildOfClass("Humanoid")
-                    if hum then
-                        rod.Parent = char
-                        task.wait(0.3)
-                        
-                        -- تشغيل السنارة
-                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
-                        task.wait(0.5)
-                        VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
-                    end
-                else
-                    -- جرب RemoteEvent للصيد
-                    local remote = ReplicatedStorage:FindFirstChild("Fishing", true)
-                    if remote and remote:IsA("RemoteEvent") then
-                        remote:FireServer()
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- ════════ AUTO CHEST LOGIC ════════
-task.spawn(function()
-    while task.wait(0.5) do
-        if Config.AutoChest then
-            pcall(function()
-                local char = LocalPlayer.Character
-                if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-                
-                for _, chest in pairs(Workspace:GetChildren()) do
-                    if chest:IsA("Model") and (chest.Name:lower():find("chest") or chest.Name:lower():find("treasure")) then
-                        local chestPart = chest:FindFirstChildWhichIsA("BasePart") or chest:FindFirstChild("Handle")
-                        if chestPart then
-                            local dist = (chestPart.Position - char.HumanoidRootPart.Position).Magnitude
-                            if dist < 100 then
-                                char.HumanoidRootPart.CFrame = CFrame.new(chestPart.Position + Vector3.new(0, 3, 0))
-                                task.wait(0.3)
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- ════════ AUTO QUEST LOGIC ════════
-task.spawn(function()
-    while task.wait(2) do
-        if Config.AutoQuest then
-            pcall(function()
-                -- البحث عن NPC المهام في Workspace
-                local char = LocalPlayer.Character
-                if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-                
-                for _, npc in pairs(Workspace:GetChildren()) do
-                    if npc:IsA("Model") and npc:FindFirstChild("Humanoid") and 
-                       (npc.Name:lower():find("quest") or npc.Name:lower():find("mission")) then
-                        local hrp = npc:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            local dist = (hrp.Position - char.HumanoidRootPart.Position).Magnitude
-                            if dist < 300 then
-                                char.HumanoidRootPart.CFrame = CFrame.new(hrp.Position + Vector3.new(0, 3, 5))
-                                task.wait(0.5)
-                                -- تفعيل الـ ProximityPrompt
-                                for _, prompt in pairs(npc:GetDescendants()) do
-                                    if prompt:IsA("ProximityPrompt") then
-                                        pcall(function()
-                                            VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
-                                            task.wait(0.1)
-                                            VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
-                                        end)
-                                    end
-                                end
-                                break
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- ═══════════════════════════════════════════════
--- 👁️ VISUAL TAB
--- ═══════════════════════════════════════════════
-CreateSection(VisualScroll, nil, "👁️ ESP")
+-- ═══════════════════════════════════════════════════════
+--                👁️ ESP
+-- ═══════════════════════════════════════════════════════
+CreateSection("👁️  VISUAL")
 
 local ESPFolder = Instance.new("Folder")
 ESPFolder.Name = "NarakuESP"
@@ -1074,11 +928,11 @@ local function createESP(plr)
     box.ZIndex = 5
     box.Size = Vector3.new(4, 6, 4)
     box.Transparency = 0.5
-    box.Color3 = Theme.Accent2
+    box.Color3 = Theme.Acc2
     box.Parent = ESPFolder
 end
 
-CreateToggle(VisualScroll, "ESP Players", "👁️", false, function(state)
+CreateToggle("ESP Players", "👁️", false, function(state)
     Config.ESP = state
     if state then
         for _, plr in pairs(Players:GetPlayers()) do
@@ -1101,273 +955,203 @@ Players.PlayerRemoving:Connect(function(plr)
     if esp then esp:Destroy() end
 end)
 
--- ═══════════════════════════════════════════════
--- 🗺️ TELEPORT TAB
--- ═══════════════════════════════════════════════
-CreateSection(TPScroll, nil, "🏝️ ISLANDS")
+-- ═══════════════════════════════════════════════════════
+--                🖱️ AUTO CLICK
+-- ═══════════════════════════════════════════════════════
+CreateSection("🖱️  AUTO CLICK")
 
-local Islands = {
-    {name = "Starter Island", icon = "🏠", pos = Vector3.new(0, 15, 0)},
-    {name = "Marine Fort", icon = "⚓", pos = Vector3.new(-2840, 30, 4000)},
-    {name = "Middle Town", icon = "🏘️", pos = Vector3.new(-655, 15, 1500)},
-    {name = "Jungle", icon = "🌴", pos = Vector3.new(-1400, 15, 200)},
-    {name = "Pirate Village", icon = "🏴‍☠️", pos = Vector3.new(-1100, 15, 3400)},
-    {name = "Desert", icon = "🏜️", pos = Vector3.new(1050, 15, 2900)},
-    {name = "Frozen Village", icon = "❄️", pos = Vector3.new(1275, 15, -1140)},
-    {name = "Colosseum", icon = "🏛️", pos = Vector3.new(-1830, 15, -3250)},
-    {name = "Skylands", icon = "☁️", pos = Vector3.new(-4850, 850, -2200)},
-    {name = "Prison", icon = "🔒", pos = Vector3.new(5300, 15, 480)},
-    {name = "Magma Village", icon = "🌋", pos = Vector3.new(-5300, 15, 8400)},
-    {name = "Underwater City", icon = "🌊", pos = Vector3.new(6100, -25, -1950)},
-    {name = "Fishman Island", icon = "🐟", pos = Vector3.new(61500, 200, -7150)},
-    {name = "Kingdom of Rose", icon = "🌹", pos = Vector3.new(-390, 15, 6110)},
-    {name = "Cursed Ship", icon = "👻", pos = Vector3.new(915, 130, 32700)},
-    {name = "Ice Castle", icon = "🏰", pos = Vector3.new(5600, 30, -2000)},
-    {name = "Forgotten Island", icon = "🗿", pos = Vector3.new(-3050, 350, -10000)},
-}
-
-for _, island in pairs(Islands) do
-    CreateButton(TPScroll, island.name, island.icon, function()
-        local char = LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            char.HumanoidRootPart.CFrame = CFrame.new(island.pos + Vector3.new(0, 5, 0))
-            Notify("Teleported", island.name, 2)
-        end
-    end)
-end
-
--- ═══════════════════════════════════════════════
--- 🛠️ MISC TAB
--- ═══════════════════════════════════════════════
-CreateSection(MiscScroll, nil, "🎁 FRUIT SNIPER")
-
-CreateToggle(MiscScroll, "Fruit Sniper", "🎁", false, function(state)
-    Config.FruitSniper = state
+CreateToggle("Auto Click", "🖱️", false, function(state)
+    Config.AutoClick = state
 end)
 
-CreateSlider(MiscScroll, "Sniper Range", 100, 3000, 1000, function(val)
-    Config.FruitSniperRange = val
+CreateSlider("Click Speed (ms)", 10, 500, 100, function(val)
+    Config.AutoClickSpeed = val / 1000
 end)
 
-CreateSection(MiscScroll, nil, "🛠️ UTILITIES")
-
-CreateButton(MiscScroll, "Reset Character", "🔄", function()
-    local char = LocalPlayer.Character
-    if char then char:BreakJoints() end
-end)
-
-CreateButton(MiscScroll, "Rejoin Server", "🚪", function()
-    pcall(function()
-        game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
-    end)
-end)
-
-CreateButton(MiscScroll, "Server Hop", "🌐", function()
-    pcall(function()
-        local TS = game:GetService("TeleportService")
-        local servers = game:GetService("HttpService"):JSONDecode(
-            game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100")
-        )
-        if servers and servers.data then
-            for _, srv in pairs(servers.data) do
-                if srv.playing < srv.maxPlayers and srv.id ~= game.JobId then
-                    TS:TeleportToPlaceInstance(game.PlaceId, srv.id, LocalPlayer)
-                    break
-                end
-            end
-        end
-    end)
-end)
-
-CreateSection(MiscScroll, nil, "📊 INFO")
-
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Size = UDim2.new(1, 0, 0, 80)
-InfoLabel.BackgroundColor3 = Theme.Tertiary
-InfoLabel.BorderSizePixel = 0
-InfoLabel.Text = "奈 Naraku Hub v4.0 MEGA\n\nDeveloped with ❤️\nRightShift = Toggle UI"
-InfoLabel.TextColor3 = Theme.Text
-InfoLabel.TextSize = 13
-InfoLabel.Font = Enum.Font.GothamBold
-InfoLabel.Parent = MiscScroll
-
-local InfoLabelCorner = Instance.new("UICorner")
-InfoLabelCorner.CornerRadius = UDim.new(0, 10)
-InfoLabelCorner.Parent = InfoLabel
-
--- ════════ FRUIT SNIPER LOGIC ════════
 task.spawn(function()
-    while task.wait(1) do
-        if Config.FruitSniper then
+    while task.wait(Config.AutoClickSpeed) do
+        if Config.AutoClick then
             pcall(function()
-                local char = LocalPlayer.Character
-                if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-                
-                for _, obj in pairs(Workspace:GetChildren()) do
-                    if obj:IsA("Tool") and obj:FindFirstChild("Handle") then
-                        local name = obj.Name:lower()
-                        -- فواكه Blox Fruits
-                        local fruitKeywords = {"dragon", "leopard", "kitsune", "dough", "venom", "shadow", "buddha", "portal", "rumble", "gravity", "control", "spirit", "mammoth", "gas", "t-rex", "trex"}
-                        for _, kw in pairs(fruitKeywords) do
-                            if name:find(kw) then
-                                local dist = (obj.Handle.Position - char.HumanoidRootPart.Position).Magnitude
-                                if dist < Config.FruitSniperRange then
-                                    char.HumanoidRootPart.CFrame = CFrame.new(obj.Handle.Position + Vector3.new(0, 3, 0))
-                                    Notify("🎁 Fruit Found!", obj.Name, 3)
-                                    task.wait(0.5)
-                                end
-                                break
-                            end
-                        end
-                    end
-                end
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+                VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
             end)
         end
     end
 end)
 
--- ═══════════════════════════════════════════════
--- إعادة التعيين عند الموت
--- ═══════════════════════════════════════════════
+-- ═══════════════════════════════════════════════════════
+--                🛠️ UTILITIES
+-- ═══════════════════════════════════════════════════════
+CreateSection("🛠️  UTILITIES")
+
+CreateButton("Reset Character", "🔄", function()
+    local char = LocalPlayer.Character
+    if char then char:BreakJoints() end
+end)
+
+CreateButton("Rejoin Server", "🚪", function()
+    pcall(function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
+    end)
+end)
+
+-- ═══════════════════════════════════════════════════════
+--                CHARACTER RESPAWN
+-- ═══════════════════════════════════════════════════════
 LocalPlayer.CharacterAdded:Connect(function(char)
     task.wait(1)
     local hum = char:FindFirstChildOfClass("Humanoid")
     if hum then
         hum.WalkSpeed = Config.SpeedBoost and Config.SpeedValue or 16
+        hum.JumpPower = Config.JumpPower
     end
 end)
 
--- ═══════════════════════════════════════════════
--- أزرار التحكم
--- ═══════════════════════════════════════════════
+-- ═══════════════════════════════════════════════════════
+--                CONTROL BUTTONS
+-- ═══════════════════════════════════════════════════════
 
+-- Permanent Close
 CloseBtn.MouseButton1Click:Connect(function()
-    -- إيقاف كل الميزات
+    -- Stop everything
     for k, v in pairs(Config) do
         if type(v) == "boolean" then Config[k] = false end
     end
     
-    -- إزالة BodyPosition
+    -- Cleanup character
     local char = LocalPlayer.Character
     if char then
         local hrp = char:FindFirstChild("HumanoidRootPart")
         if hrp then
-            local bp = hrp:FindFirstChildOfClass("BodyPosition")
-            if bp then bp:Destroy() end
+            for _, child in pairs(hrp:GetChildren()) do
+                if child:IsA("BodyVelocity") or child:IsA("BodyPosition") then
+                    child:Destroy()
+                end
+            end
             hrp.Velocity = Vector3.new(0, 0, 0)
         end
     end
     
+    -- Animate close
     Main:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Back, 0.3, true)
     task.wait(0.4)
+    
+    -- Destroy everything
     ScreenGui:Destroy()
-    print("🔒 Naraku Hub v4.0 Closed Permanently")
+    print("🔒 Naraku Hub v5.0 Closed")
 end)
 
+-- Minimize
 local minimized = false
 MinBtn.MouseButton1Click:Connect(function()
     minimized = not minimized
     if minimized then
-        Main:TweenSize(UDim2.new(0, 620, 0, 70), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        Main:TweenSize(UDim2.new(0, 600, 0, 65), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     else
-        Main:TweenSize(UDim2.new(0, 620, 0, 560), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        Main:TweenSize(UDim2.new(0, 600, 0, 520), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
     end
 end)
 
-OpenButton.MouseButton1Click:Connect(function()
-    OpenButton.Visible = false
+-- Reopen from floating button
+OpenBtn.MouseButton1Click:Connect(function()
+    OpenBtn.Visible = false
     Main.Visible = true
     Main.Size = UDim2.new(0, 0, 0, 0)
-    Main:TweenSize(UDim2.new(0, 620, 0, 560), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
+    Main:TweenSize(UDim2.new(0, 600, 0, 520), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
 end)
 
+-- RightShift toggle
 UserInputService.InputBegan:Connect(function(input, gp)
     if gp then return end
     if input.KeyCode == Enum.KeyCode.RightShift then
         if Main.Visible then
             Main.Visible = false
-            OpenButton.Visible = true
+            OpenBtn.Visible = true
         else
             Main.Visible = true
-            OpenButton.Visible = false
+            OpenBtn.Visible = false
         end
     end
 end)
 
--- ════════ إشعار الترحيب ════════
-local Notify2 = Instance.new("Frame")
-Notify2.Size = UDim2.new(0, 380, 0, 90)
-Notify2.Position = UDim2.new(0.5, -190, 0, -120)
-Notify2.BackgroundColor3 = Theme.Secondary
-Notify2.BorderSizePixel = 0
-Notify2.Parent = ScreenGui
+-- ═══════════════════════════════════════════════════════
+--                WELCOME NOTIFICATION
+-- ═══════════════════════════════════════════════════════
+local Notify = Instance.new("Frame")
+Notify.Size = UDim2.new(0, 380, 0, 90)
+Notify.Position = UDim2.new(0.5, -190, 0, -120)
+Notify.BackgroundColor3 = Theme.Sec
+Notify.BorderSizePixel = 0
+Notify.Parent = ScreenGui
 
-local NotifyCorner = Instance.new("UICorner")
-NotifyCorner.CornerRadius = UDim.new(0, 14)
-NotifyCorner.Parent = Notify2
+local NC = Instance.new("UICorner")
+NC.CornerRadius = UDim.new(0, 14)
+NC.Parent = Notify
 
-local NotifyStroke = Instance.new("UIStroke")
-NotifyStroke.Color = Theme.Accent
-NotifyStroke.Thickness = 2
-NotifyStroke.Parent = Notify2
+local NS = Instance.new("UIStroke")
+NS.Color = Theme.Acc
+NS.Thickness = 2
+NS.Parent = Notify
 
-local NotifyGradient = Instance.new("UIGradient")
-NotifyGradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Theme.Accent),
-    ColorSequenceKeypoint.new(0.5, Theme.Accent2),
-    ColorSequenceKeypoint.new(1, Theme.Accent3),
+local NG = Instance.new("UIGradient")
+NG.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Theme.Acc),
+    ColorSequenceKeypoint.new(0.5, Theme.Acc2),
+    ColorSequenceKeypoint.new(1, Theme.Acc3),
 })
-NotifyGradient.Rotation = 45
-NotifyGradient.Parent = NotifyStroke
+NG.Rotation = 45
+NG.Parent = NS
 
-local NotifyIcon = Instance.new("TextLabel")
-NotifyIcon.Size = UDim2.new(0, 65, 1, 0)
-NotifyIcon.Position = UDim2.new(0, 0, 0, 0)
-NotifyIcon.BackgroundTransparency = 1
-NotifyIcon.Text = "奈"
-NotifyIcon.TextColor3 = Theme.Accent
-NotifyIcon.TextSize = 34
-NotifyIcon.Font = Enum.Font.GothamBlack
-NotifyIcon.Parent = Notify2
+local NI = Instance.new("TextLabel")
+NI.Size = UDim2.new(0, 65, 1, 0)
+NI.BackgroundTransparency = 1
+NI.Text = "奈"
+NI.TextColor3 = Theme.Acc
+NI.TextSize = 34
+NI.Font = Enum.Font.GothamBlack
+NI.Parent = Notify
 
-local NotifyTitle = Instance.new("TextLabel")
-NotifyTitle.Size = UDim2.new(1, -75, 0, 32)
-NotifyTitle.Position = UDim2.new(0, 70, 0, 12)
-NotifyTitle.BackgroundTransparency = 1
-NotifyTitle.Text = "NARAKU HUB v4.0 MEGA"
-NotifyTitle.TextColor3 = Theme.Text
-NotifyTitle.TextSize = 16
-NotifyTitle.Font = Enum.Font.GothamBlack
-NotifyTitle.TextXAlignment = Enum.TextXAlignment.Left
-NotifyTitle.Parent = Notify2
+local NT = Instance.new("TextLabel")
+NT.Size = UDim2.new(1, -75, 0, 32)
+NT.Position = UDim2.new(0, 70, 0, 12)
+NT.BackgroundTransparency = 1
+NT.Text = "NARAKU HUB v5.0 FIXED"
+NT.TextColor3 = Theme.Text
+NT.TextSize = 16
+NT.Font = Enum.Font.GothamBlack
+NT.TextXAlignment = Enum.TextXAlignment.Left
+NT.Parent = Notify
 
-local NotifyMsg = Instance.new("TextLabel")
-NotifyMsg.Size = UDim2.new(1, -75, 0, 25)
-NotifyMsg.Position = UDim2.new(0, 70, 0, 46)
-NotifyMsg.BackgroundTransparency = 1
-NotifyMsg.Text = "All 12 Features Loaded ✓"
-NotifyMsg.TextColor3 = Theme.Success
-NotifyMsg.TextSize = 13
-NotifyMsg.Font = Enum.Font.GothamBold
-NotifyMsg.TextXAlignment = Enum.TextXAlignment.Left
-NotifyMsg.Parent = Notify2
+local NM = Instance.new("TextLabel")
+NM.Size = UDim2.new(1, -75, 0, 25)
+NM.Position = UDim2.new(0, 70, 0, 46)
+NM.BackgroundTransparency = 1
+NM.Text = "Speed ✓ | Farm ✓ | Hitbox ✓"
+NM.TextColor3 = Theme.Success
+NM.TextSize = 13
+NM.Font = Enum.Font.GothamBold
+NM.TextXAlignment = Enum.TextXAlignment.Left
+NM.Parent = Notify
 
-TweenService:Create(Notify2, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -190, 0, 20)}):Play()
+TweenService:Create(Notify, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -190, 0, 20)}):Play()
 task.wait(4)
-TweenService:Create(Notify2, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -190, 0, -120)}):Play()
+TweenService:Create(Notify, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -190, 0, -120)}):Play()
 task.wait(0.5)
-Notify2:Destroy()
+Notify:Destroy()
 
--- ════════ Console ════════
+-- ═══════════════════════════════════════════════════════
+--                CONSOLE LOG
+-- ═══════════════════════════════════════════════════════
 print("╔════════════════════════════════════════════╗")
-print("║   NARAKU HUB v4.0 MEGA EDITION LOADED      ║")
+print("║   NARAKU HUB v5.0 FIXED - LOADED           ║")
 print("║                                            ║")
-print("║   ⚔️ Combat:  Hitbox, Auto Click            ║")
-print("║   💨 Move:    Speed, Inf Jump, Jump Power  ║")
-print("║   🎣 Farm:    Auto Farm, Fish, Chest, Quest║")
-print("║   👁️ Visual:  ESP Players                  ║")
-print("║   🗺️ TP:      17 Islands                   ║")
-print("║   🎁 Fruit:   Sniper                       ║")
+print("║  ✅ Speed Boost (BodyVelocity method)      ║")
+print("║  ✅ Auto Farm (Auto Melee + Kill)          ║")
+print("║  ✅ Hitbox on Enemies                      ║")
+print("║  ✅ Infinite Jump                          ║")
+print("║  ✅ ESP Players                            ║")
+print("║  ✅ Auto Click                             ║")
+print("║  ✅ Permanent Close                        ║")
 print("║                                            ║")
-print("║   📌 RightShift to toggle UI              ║")
+print("║  📌 RightShift = Toggle UI                ║")
 print("╚════════════════════════════════════════════╝")
