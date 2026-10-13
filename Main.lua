@@ -7,12 +7,9 @@
     ║          ██║ ╚████║██║  ██║██║  ██║           ║
     ║          ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝           ║
     ║                                                ║
-    ║           NARAKU HUB - RIVALS v1.0            ║
+    ║        NARAKU - RIVALS v2.0 AUTO              ║
     ║                                                ║
-    ║   ✓ Silent Aim    ✓ Aimbot                    ║
-    ║   ✓ Hitbox        ✓ ESP                       ║
-    ║   ✓ Trigger Bot   ✓ FOV Circle                ║
-    ║   ✓ Fly           ✓ Infinite Jump             ║
+    ║   ⚡ Everything runs AUTOMATICALLY!           ║
     ╚═══════════════════════════════════════════════╝
 ]]
 
@@ -34,64 +31,65 @@ local LocalPlayer = Players.LocalPlayer
 -- ═══════════════════════════════════════════════════════
 --                    CLEANUP
 -- ═══════════════════════════════════════════════════════
-local oldNames = {"NarakuRivals", "NarakuRivalsV1"}
+local oldNames = {"NarakuRivals", "NarakuRivalsV1", "NarakuRivalsV2"}
 for _, name in pairs(oldNames) do
     local old = game.CoreGui:FindFirstChild(name)
     if old then old:Destroy() end
 end
 
 -- ═══════════════════════════════════════════════════════
---                    CONFIG
+--                    CONFIG - كل شي مفعّل من البداية
 -- ═══════════════════════════════════════════════════════
 local Config = {
-    -- Aimbot
-    Aimbot = false,
+    -- AIMBOT - مفعل تلقائياً
+    Aimbot = true,                    -- ← مفعل
+    AimbotAlwaysOn = true,            -- ← يشتغل بدون زر
     AimbotKey = Enum.UserInputType.MouseButton2,
-    AimbotMode = "Rage", -- "Rage" / "Legit"
-    AimbotLockPart = "Head", -- "Head" / "UpperTorso"
-    AimbotFOV = 500,
-    AimbotSmoothness = 0.2,
-    AimbotPrediction = false,
+    AimbotMode = "Rage",
+    AimbotLockPart = "Head",
+    AimbotFOV = 800,
+    AimbotSmoothness = 0.5,
+    AimbotPrediction = true,
     AimbotWallCheck = true,
     AimbotTeamCheck = true,
     AimbotMaxDistance = 0,
-    AimbotAutoFire = false,
-    AimbotPriority = "Distance", -- "Distance" / "Health"
+    AimbotAutoFire = true,            -- ← يضرب تلقائي
+    AimbotPriority = "Distance",
     
-    -- Silent Aim
-    SilentAim = false,
-    SilentAimFOV = 500,
+    -- SILENT AIM - مفعل تلقائياً
+    SilentAim = true,                 -- ← مفعل
+    SilentAimFOV = 800,
     SilentAimHitchance = 100,
     SilentAimWallCheck = true,
     SilentAimTeamCheck = true,
     SilentAimTargetPart = "Head",
     
-    -- Hitbox
-    HitboxExpander = false,
-    HitboxSize = 15,
-    HitboxRange = 300,
+    -- HITBOX - مفعل تلقائياً
+    HitboxExpander = true,            -- ← مفعل
+    HitboxSize = 20,
+    HitboxRange = 500,
     HitboxTransparency = 0.5,
     
-    -- Trigger Bot
-    TriggerBot = false,
-    TriggerBotDelay = 100, -- ms
+    -- TRIGGER BOT - مفعل تلقائياً
+    TriggerBot = true,                -- ← مفعل
+    TriggerBotDelay = 50,
     
-    -- FOV Circle
-    FOVCircle = false,
-    FOVCircleSize = 500,
-    FOVCircleRainbow = false,
+    -- FOV CIRCLE - مفعل تلقائياً
+    FOVCircle = true,                 -- ← مفعل
+    FOVCircleSize = 800,
+    FOVCircleRainbow = true,
     
-    -- ESP
-    ESP = false,
-    ESPBox = false,
+    -- ESP - مفعل تلقائياً
+    ESP = true,                       -- ← مفعل
+    ESPBox = true,
     ESPName = true,
     ESPDistance = true,
     ESPHealth = true,
-    ESPTracer = false,
+    ESPTracer = true,
     ESPChams = false,
     
-    -- Movement
-    InfiniteJump = false,
+    -- MOVEMENT - مفعل تلقائياً
+    InfiniteJump = true,              -- ← مفعل
     Fly = false,
     FlySpeed = 50,
     WalkSpeed = false,
@@ -118,12 +116,12 @@ local Theme = {
 }
 
 -- ═══════════════════════════════════════════════════════
---                    UTILITY FUNCTIONS
+--                    UTILITY
 -- ═══════════════════════════════════════════════════════
 local function getChar() return LocalPlayer.Character end
-local function getHum() 
+local function getHum()
     local c = getChar()
-    return c and c:FindFirstChildOfClass("Humanoid") 
+    return c and c:FindFirstChildOfClass("Humanoid")
 end
 local function getRoot()
     local c = getChar()
@@ -193,7 +191,7 @@ local function getClosestTarget(fov)
     for _, plr in ipairs(Players:GetPlayers()) do
         if isValidTarget(plr) then
             local partName = Config.AimbotLockPart
-            local targetPart = plr.Character:FindFirstChild(partName) 
+            local targetPart = plr.Character:FindFirstChild(partName)
                 or plr.Character:FindFirstChild("Head")
                 or plr.Character:FindFirstChild("HumanoidRootPart")
             
@@ -223,7 +221,7 @@ end
 --                    UI CREATION
 -- ═══════════════════════════════════════════════════════
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "NarakuRivals"
+ScreenGui.Name = "NarakuRivalsV2"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.IgnoreGuiInset = true
@@ -319,7 +317,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -180, 1, 0)
 Title.Position = UDim2.new(0, 20, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "奈  NARAKU - RIVALS 奈"
+Title.Text = "奈  NARAKU - RIVALS v2.0 奈"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 22
 Title.Font = Enum.Font.GothamBlack
@@ -327,12 +325,12 @@ Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = Header
 
 local Sub = Instance.new("TextLabel")
-Sub.Size = UDim2.new(0, 240, 0, 20)
+Sub.Size = UDim2.new(0, 280, 0, 20)
 Sub.Position = UDim2.new(0, 22, 1, -22)
 Sub.BackgroundTransparency = 1
-Sub.Text = "Aimbot • Silent Aim • Hitbox"
-Sub.TextColor3 = Color3.fromRGB(255, 255, 255)
-Sub.TextTransparency = 0.4
+Sub.Text = "⚡ AUTO MODE • Everything Enabled"
+Sub.TextColor3 = Color3.fromRGB(80, 230, 130)
+Sub.TextTransparency = 0
 Sub.TextSize = 11
 Sub.Font = Enum.Font.GothamBold
 Sub.TextXAlignment = Enum.TextXAlignment.Left
@@ -370,10 +368,55 @@ local CC = Instance.new("UICorner")
 CC.CornerRadius = UDim.new(0, 8)
 CC.Parent = CloseBtn
 
+-- Status Bar
+local StatusBar = Instance.new("Frame")
+StatusBar.Size = UDim2.new(1, -20, 0, 28)
+StatusBar.Position = UDim2.new(0, 10, 0, 76)
+StatusBar.BackgroundColor3 = Theme.Ter
+StatusBar.BorderSizePixel = 0
+StatusBar.Parent = Main
+
+local SBC = Instance.new("UICorner")
+SBC.CornerRadius = UDim.new(0, 8)
+SBC.Parent = StatusBar
+
+local StatusDot = Instance.new("Frame")
+StatusDot.Size = UDim2.new(0, 8, 0, 8)
+StatusDot.Position = UDim2.new(0, 12, 0.5, -4)
+StatusDot.BackgroundColor3 = Theme.Success
+StatusDot.BorderSizePixel = 0
+StatusDot.Parent = StatusBar
+
+local SDC = Instance.new("UICorner")
+SDC.CornerRadius = UDim.new(1, 0)
+SDC.Parent = StatusDot
+
+local StatusText = Instance.new("TextLabel")
+StatusText.Size = UDim2.new(1, -40, 1, 0)
+StatusText.Position = UDim2.new(0, 28, 0, 0)
+StatusText.BackgroundTransparency = 1
+StatusText.Text = "⚡ AUTO MODE ACTIVE • All Features Enabled"
+StatusText.TextColor3 = Theme.Text
+StatusText.TextSize = 11
+StatusText.Font = Enum.Font.GothamBold
+StatusText.TextXAlignment = Enum.TextXAlignment.Left
+StatusText.Parent = StatusBar
+
+task.spawn(function()
+    while StatusDot.Parent do
+        pcall(function()
+            TweenService:Create(StatusDot, TweenInfo.new(0.8), {BackgroundColor3 = Theme.Success}):Play()
+            task.wait(0.8)
+            TweenService:Create(StatusDot, TweenInfo.new(0.8), {BackgroundColor3 = Color3.fromRGB(40, 120, 70)}):Play()
+            task.wait(0.8)
+        end)
+    end
+end)
+
 -- Tab Bar
 local TabBar = Instance.new("Frame")
 TabBar.Size = UDim2.new(1, -20, 0, 36)
-TabBar.Position = UDim2.new(0, 10, 0, 78)
+TabBar.Position = UDim2.new(0, 10, 0, 110)
 TabBar.BackgroundColor3 = Theme.Sec
 TabBar.BorderSizePixel = 0
 TabBar.Parent = Main
@@ -394,10 +437,10 @@ TBL.FillDirection = Enum.FillDirection.Horizontal
 TBL.Padding = UDim.new(0, 4)
 TBL.Parent = TabBar
 
--- Content Holder
+-- Content
 local Content = Instance.new("Frame")
-Content.Size = UDim2.new(1, -20, 1, -130)
-Content.Position = UDim2.new(0, 10, 0, 122)
+Content.Size = UDim2.new(1, -20, 1, -162)
+Content.Position = UDim2.new(0, 10, 0, 152)
 Content.BackgroundColor3 = Theme.Sec
 Content.BorderSizePixel = 0
 Content.Parent = Main
@@ -463,10 +506,7 @@ local function CreateTab(name, icon)
     return Scroll
 end
 
--- ═══════════════════════════════════════════════════════
---                    HELPER UI FUNCTIONS
--- ═══════════════════════════════════════════════════════
-
+-- Helper UI functions
 local function CreateSection(parent, text)
     local S = Instance.new("Frame")
     S.Size = UDim2.new(1, 0, 0, 32)
@@ -588,8 +628,6 @@ local function CreateToggle(parent, name, icon, default, callback)
         updateVisual()
         if callback then pcall(callback, state) end
     end)
-    
-    return B
 end
 
 local function CreateSlider(parent, name, min, max, default, callback)
@@ -671,64 +709,6 @@ local function CreateSlider(parent, name, min, max, default, callback)
     end)
 end
 
-local function CreateDropdown(parent, name, options, default, callback)
-    local C = Instance.new("Frame")
-    C.Size = UDim2.new(1, 0, 0, 45)
-    C.BackgroundColor3 = Theme.Ter
-    C.BorderSizePixel = 0
-    C.Parent = parent
-    
-    local CC = Instance.new("UICorner")
-    CC.CornerRadius = UDim.new(0, 10)
-    CC.Parent = C
-    
-    local CS = Instance.new("UIStroke")
-    CS.Color = Color3.fromRGB(60, 50, 90)
-    CS.Thickness = 1
-    CS.Parent = C
-    
-    local L = Instance.new("TextLabel")
-    L.Size = UDim2.new(0.5, 0, 1, 0)
-    L.Position = UDim2.new(0, 10, 0, 0)
-    L.BackgroundTransparency = 1
-    L.Text = name
-    L.TextColor3 = Theme.Text
-    L.TextSize = 13
-    L.Font = Enum.Font.GothamBold
-    L.TextXAlignment = Enum.TextXAlignment.Left
-    L.Parent = C
-    
-    local currentVal = default
-    
-    local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(0.45, 0, 0, 32)
-    Btn.Position = UDim2.new(0.53, 0, 0.5, -16)
-    Btn.BackgroundColor3 = Theme.Acc
-    Btn.Text = default
-    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Btn.TextSize = 12
-    Btn.Font = Enum.Font.GothamBold
-    Btn.AutoButtonColor = false
-    Btn.Parent = C
-    
-    local BtnC = Instance.new("UICorner")
-    BtnC.CornerRadius = UDim.new(0, 6)
-    BtnC.Parent = Btn
-    
-    local index = 1
-    for i, v in ipairs(options) do
-        if v == default then index = i break end
-    end
-    
-    Btn.MouseButton1Click:Connect(function()
-        index = index + 1
-        if index > #options then index = 1 end
-        currentVal = options[index]
-        Btn.Text = currentVal
-        if callback then pcall(callback, currentVal) end
-    end)
-end
-
 -- ═══════════════════════════════════════════════════════
 --                    CREATE TABS
 -- ═══════════════════════════════════════════════════════
@@ -739,44 +719,29 @@ local ESPTab = CreateTab("ESP", "👁️")
 local MoveTab = CreateTab("Move", "💨")
 local MiscTab = CreateTab("Misc", "🛠️")
 
--- Default tab
 Tabs["Aimbot"].Scroll.Visible = true
 TweenService:Create(Tabs["Aimbot"].Button, TweenInfo.new(0.15), {BackgroundColor3 = Theme.Acc, TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
 
 -- ═══════════════════════════════════════════════════════
 --                    🎯 AIMBOT TAB
 -- ═══════════════════════════════════════════════════════
-CreateSection(AimbotTab, "🎯 AIMBOT SETTINGS")
+CreateSection(AimbotTab, "🎯 AIMBOT (Auto-On)")
 
-CreateToggle(AimbotTab, "Enable Aimbot", "🎯", false, function(v)
+CreateToggle(AimbotTab, "Enable Aimbot", "🎯", true, function(v)
     Config.Aimbot = v
 end)
 
-CreateDropdown(AimbotTab, "Mode", {"Rage", "Legit"}, "Rage", function(v)
-    Config.AimbotMode = v
+CreateToggle(AimbotTab, "Always On (No Key)", "⚡", true, function(v)
+    Config.AimbotAlwaysOn = v
 end)
 
-CreateDropdown(AimbotTab, "Lock Part", {"Head", "UpperTorso", "HumanoidRootPart"}, "Head", function(v)
-    Config.AimbotLockPart = v
+CreateToggle(AimbotTab, "Auto Fire", "🔥", true, function(v)
+    Config.AimbotAutoFire = v
 end)
 
-CreateDropdown(AimbotTab, "Priority", {"Distance", "Health"}, "Distance", function(v)
-    Config.AimbotPriority = v
+CreateToggle(AimbotTab, "Prediction", "🔮", true, function(v)
+    Config.AimbotPrediction = v
 end)
-
-CreateSlider(AimbotTab, "FOV", 50, 1000, 500, function(v)
-    Config.AimbotFOV = v
-end)
-
-CreateSlider(AimbotTab, "Smoothness", 1, 20, 5, function(v)
-    Config.AimbotSmoothness = v / 20
-end)
-
-CreateSlider(AimbotTab, "Max Distance (0=∞)", 0, 2000, 0, function(v)
-    Config.AimbotMaxDistance = v
-end)
-
-CreateSection(AimbotTab, "⚙️ CHECKS")
 
 CreateToggle(AimbotTab, "Wall Check", "🧱", true, function(v)
     Config.AimbotWallCheck = v
@@ -786,49 +751,40 @@ CreateToggle(AimbotTab, "Team Check", "👥", true, function(v)
     Config.AimbotTeamCheck = v
 end)
 
-CreateToggle(AimbotTab, "Movement Prediction", "🔮", false, function(v)
-    Config.AimbotPrediction = v
-end)
-
-CreateToggle(AimbotTab, "Auto Fire", "🔥", false, function(v)
-    Config.AimbotAutoFire = v
+CreateSlider(AimbotTab, "FOV", 50, 1500, 800, function(v)
+    Config.AimbotFOV = v
 end)
 
 CreateSection(AimbotTab, "⚡ TRIGGER BOT")
 
-CreateToggle(AimbotTab, "Enable Trigger Bot", "⚡", false, function(v)
+CreateToggle(AimbotTab, "Enable Trigger Bot", "⚡", true, function(v)
     Config.TriggerBot = v
 end)
 
-CreateSlider(AimbotTab, "Trigger Delay (ms)", 0, 500, 100, function(v)
+CreateSlider(AimbotTab, "Trigger Delay (ms)", 0, 500, 50, function(v)
     Config.TriggerBotDelay = v
 end)
 
-CreateSection(AimbotTab, "🎨 FOV CIRCLE")
+CreateSection(AimbotTab, "⭕ FOV CIRCLE")
 
-CreateToggle(AimbotTab, "Show FOV Circle", "⭕", false, function(v)
+CreateToggle(AimbotTab, "Show FOV Circle", "⭕", true, function(v)
     Config.FOVCircle = v
-    fovCircle.Visible = v
 end)
 
-CreateToggle(AimbotTab, "Rainbow FOV", "🌈", false, function(v)
+CreateToggle(AimbotTab, "Rainbow FOV", "🌈", true, function(v)
     Config.FOVCircleRainbow = v
 end)
 
 -- ═══════════════════════════════════════════════════════
 --                    👻 SILENT AIM TAB
 -- ═══════════════════════════════════════════════════════
-CreateSection(SilentTab, "👻 SILENT AIM")
+CreateSection(SilentTab, "👻 SILENT AIM (Auto-On)")
 
-CreateToggle(SilentTab, "Enable Silent Aim", "👻", false, function(v)
+CreateToggle(SilentTab, "Enable Silent Aim", "👻", true, function(v)
     Config.SilentAim = v
 end)
 
-CreateDropdown(SilentTab, "Target Part", {"Head", "UpperTorso", "HumanoidRootPart"}, "Head", function(v)
-    Config.SilentAimTargetPart = v
-end)
-
-CreateSlider(SilentTab, "FOV", 50, 1000, 500, function(v)
+CreateSlider(SilentTab, "FOV", 50, 1500, 800, function(v)
     Config.SilentAimFOV = v
 end)
 
@@ -847,19 +803,18 @@ end)
 -- ═══════════════════════════════════════════════════════
 --                    📦 HITBOX TAB
 -- ═══════════════════════════════════════════════════════
-CreateSection(HitboxTab, "📦 HITBOX EXPANDER")
+CreateSection(HitboxTab, "📦 HITBOX (Auto-On)")
 
-CreateToggle(HitboxTab, "Enable Hitbox", "📦", false, function(v)
+CreateToggle(HitboxTab, "Enable Hitbox", "📦", true, function(v)
     Config.HitboxExpander = v
     if not v then
-        -- Restore all
-        for target, origSize in pairs(HitboxTargets) do
+        for target, orig in pairs(HitboxTargets) do
             pcall(function()
                 if target and target.Parent then
-                    target.Size = origSize.size
-                    target.Transparency = origSize.transparency
-                    target.CanCollide = origSize.canCollide
-                    target.Massless = origSize.massless
+                    target.Size = orig.size
+                    target.Transparency = orig.transparency
+                    target.CanCollide = orig.canCollide
+                    target.Massless = orig.massless
                 end
             end)
         end
@@ -867,11 +822,11 @@ CreateToggle(HitboxTab, "Enable Hitbox", "📦", false, function(v)
     end
 end)
 
-CreateSlider(HitboxTab, "Hitbox Size", 5, 50, 15, function(v)
+CreateSlider(HitboxTab, "Size", 5, 50, 20, function(v)
     Config.HitboxSize = v
 end)
 
-CreateSlider(HitboxTab, "Range", 50, 1000, 300, function(v)
+CreateSlider(HitboxTab, "Range", 50, 1000, 500, function(v)
     Config.HitboxRange = v
 end)
 
@@ -882,9 +837,9 @@ end)
 -- ═══════════════════════════════════════════════════════
 --                    👁️ ESP TAB
 -- ═══════════════════════════════════════════════════════
-CreateSection(ESPTab, "👁️ PLAYER ESP")
+CreateSection(ESPTab, "👁️ ESP (Auto-On)")
 
-CreateToggle(ESPTab, "Enable ESP", "👁️", false, function(v)
+CreateToggle(ESPTab, "Enable ESP", "👁️", true, function(v)
     Config.ESP = v
     if not v then
         for plr, esp in pairs(ESPs) do
@@ -901,7 +856,7 @@ CreateToggle(ESPTab, "Enable ESP", "👁️", false, function(v)
     end
 end)
 
-CreateToggle(ESPTab, "Box ESP", "📦", false, function(v)
+CreateToggle(ESPTab, "Box ESP", "📦", true, function(v)
     Config.ESPBox = v
 end)
 
@@ -917,7 +872,7 @@ CreateToggle(ESPTab, "Health ESP", "❤️", true, function(v)
     Config.ESPHealth = v
 end)
 
-CreateToggle(ESPTab, "Tracer ESP", "📡", false, function(v)
+CreateToggle(ESPTab, "Tracer ESP", "📡", true, function(v)
     Config.ESPTracer = v
 end)
 
@@ -930,7 +885,7 @@ end)
 -- ═══════════════════════════════════════════════════════
 CreateSection(MoveTab, "💨 MOVEMENT")
 
-CreateToggle(MoveTab, "Infinite Jump", "🦘", false, function(v)
+CreateToggle(MoveTab, "Infinite Jump", "🦘", true, function(v)
     Config.InfiniteJump = v
 end)
 
@@ -996,7 +951,7 @@ end)
 
 -- FOV Circle
 local fovCircle = Drawing.new("Circle")
-fovCircle.Visible = false
+fovCircle.Visible = true
 fovCircle.Thickness = 2
 fovCircle.Color = Color3.fromRGB(160, 60, 255)
 fovCircle.Transparency = 1
@@ -1016,23 +971,12 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- Aimbot Loop
-local aimbotHolding = false
-UserInputService.InputBegan:Connect(function(input, gp)
-    if gp then return end
-    if input.UserInputType == Config.AimbotKey then
-        aimbotHolding = true
-    end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-    if input.UserInputType == Config.AimbotKey then
-        aimbotHolding = false
-    end
-end)
-
+-- Aimbot Loop - AUTO (always on)
 RunService.RenderStepped:Connect(function(dt)
-    if not Config.Aimbot or not aimbotHolding then return end
+    if not Config.Aimbot then return end
+    
+    -- Auto always on (no key needed)
+    if not Config.AimbotAlwaysOn then return end
     
     local target = getClosestTarget(Config.AimbotFOV)
     if not target or not target.Character then return end
@@ -1058,25 +1002,37 @@ RunService.RenderStepped:Connect(function(dt)
         Camera.CFrame = CFrame.lookAt(Camera.CFrame.Position, Camera.CFrame.Position + newLook)
     end
     
+    -- Auto fire
     if Config.AimbotAutoFire then
         local tool = getChar() and getChar():FindFirstChildOfClass("Tool")
-        if tool then tool:Activate() end
+        if tool then pcall(function() tool:Activate() end) end
+        pcall(function()
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+            VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+        end)
     end
 end)
 
--- Silent Aim Hook
+-- Silent Aim Hook - قوي جداً
+local silentAimActive = false
+
 pcall(function()
     local mt = getrawmetatable(game)
     local oldIndex = mt.__index
+    local oldNamecall = mt.__namecall
+    
     setreadonly(mt, false)
+    
     mt.__index = newcclosure(function(self, key)
         if Config.SilentAim and key == "Hit" and self == Workspace then
             if math.random(100) <= Config.SilentAimHitchance then
                 local target = getClosestTarget(Config.SilentAimFOV)
                 if target and target.Character then
-                    local part = target.Character:FindFirstChild(Config.SilentAimTargetPart)
-                        or target.Character:FindFirstChild("Head")
+                    local part = target.Character:FindFirstChild("Head")
+                        or target.Character:FindFirstChild("UpperTorso")
+                        or target.Character:FindFirstChild("HumanoidRootPart")
                     if part then
+                        silentAimActive = true
                         return part
                     end
                 end
@@ -1084,10 +1040,31 @@ pcall(function()
         end
         return oldIndex(self, key)
     end)
+    
+    mt.__namecall = newcclosure(function(self, ...)
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        if Config.SilentAim and method == "FindPartOnRay" then
+            if math.random(100) <= Config.SilentAimHitchance then
+                local target = getClosestTarget(Config.SilentAimFOV)
+                if target and target.Character then
+                    local part = target.Character:FindFirstChild("Head")
+                    if part then
+                        silentAimActive = true
+                        return part, part.Position
+                    end
+                end
+            end
+        end
+        
+        return oldNamecall(self, ...)
+    end)
+    
     setreadonly(mt, true)
 end)
 
--- Trigger Bot
+-- Trigger Bot - AUTO
 local lastTrigger = 0
 RunService.Heartbeat:Connect(function()
     if not Config.TriggerBot then return end
@@ -1102,16 +1079,16 @@ RunService.Heartbeat:Connect(function()
             if plr and plr ~= LocalPlayer then
                 lastTrigger = tick()
                 local tool = getChar() and getChar():FindFirstChildOfClass("Tool")
-                if tool then tool:Activate() end
+                if tool then pcall(function() tool:Activate() end) end
             end
         end
     end
 end)
 
--- Hitbox Expander
+-- Hitbox Expander - AUTO
 HitboxTargets = {}
 task.spawn(function()
-    while task.wait(0.15) do
+    while task.wait(0.1) do
         if Config.HitboxExpander then
             local myRoot = getRoot()
             if myRoot then
@@ -1153,7 +1130,7 @@ task.spawn(function()
     end
 end)
 
--- ESP System
+-- ESP - AUTO
 ESPs = {}
 task.spawn(function()
     while task.wait() do
@@ -1162,10 +1139,8 @@ task.spawn(function()
                 if plr ~= LocalPlayer and plr.Character then
                     local hum = plr.Character:FindFirstChildOfClass("Humanoid")
                     local root = plr.Character:FindFirstChild("HumanoidRootPart")
-                    local head = plr.Character:FindFirstChild("Head")
                     
-                    if hum and root and head then
-                        -- Create ESP if doesn't exist
+                    if hum and root then
                         if not ESPs[plr] then
                             local esp = {}
                             
@@ -1206,17 +1181,6 @@ task.spawn(function()
                                 esp.tracer.Transparency = 1
                             end
                             
-                            if Config.ESPChams then
-                                esp.cham = Instance.new("Highlight")
-                                esp.cham.Name = "NarakuESP_" .. plr.Name
-                                esp.cham.Adornee = plr.Character
-                                esp.cham.FillColor = Theme.Acc2
-                                esp.cham.OutlineColor = Theme.Acc
-                                esp.cham.FillTransparency = 0.5
-                                esp.cham.OutlineTransparency = 0
-                                esp.cham.Parent = ScreenGui
-                            end
-                            
                             ESPs[plr] = esp
                         end
                         
@@ -1224,7 +1188,6 @@ task.spawn(function()
                         local rootPos, onScreen = Camera:WorldToViewportPoint(root.Position)
                         
                         if onScreen and hum.Health > 0 then
-                            -- Box
                             if esp.box then
                                 local minX, minY = math.huge, math.huge
                                 local maxX, maxY = -math.huge, -math.huge
@@ -1254,36 +1217,32 @@ task.spawn(function()
                                 end
                             end
                             
-                            -- Name
                             if esp.name then
                                 esp.name.Text = plr.Name
                                 esp.name.Position = Vector2.new(rootPos.X, rootPos.Y - 55)
-                                esp.name.Visible = Config.ESPName
+                                esp.name.Visible = true
                             end
                             
-                            -- Health
                             if esp.health then
                                 esp.health.Text = math.floor(hum.Health) .. " HP"
                                 esp.health.Position = Vector2.new(rootPos.X, rootPos.Y - 38)
-                                esp.health.Visible = Config.ESPHealth
+                                esp.health.Visible = true
                             end
                             
-                            -- Distance
                             if esp.dist then
                                 local myRoot = getRoot()
                                 if myRoot then
                                     local d = math.floor((myRoot.Position - root.Position).Magnitude)
                                     esp.dist.Text = d .. " studs"
                                     esp.dist.Position = Vector2.new(rootPos.X, rootPos.Y - 22)
-                                    esp.dist.Visible = Config.ESPDistance
+                                    esp.dist.Visible = true
                                 end
                             end
                             
-                            -- Tracer
                             if esp.tracer then
                                 esp.tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y)
                                 esp.tracer.To = Vector2.new(rootPos.X, rootPos.Y)
-                                esp.tracer.Visible = Config.ESPTracer
+                                esp.tracer.Visible = true
                             end
                         else
                             if esp.box then esp.box.Visible = false end
@@ -1299,7 +1258,7 @@ task.spawn(function()
     end
 end)
 
--- Infinite Jump
+-- Infinite Jump - AUTO
 UserInputService.JumpRequest:Connect(function()
     if Config.InfiniteJump then
         local hum = getHum()
@@ -1337,6 +1296,26 @@ task.spawn(function()
     end
 end)
 
+-- Character respawn handling
+LocalPlayer.CharacterAdded:Connect(function(char)
+    task.wait(1)
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then
+        hum.WalkSpeed = Config.WalkSpeed and Config.WalkSpeedValue or 16
+    end
+    -- Reset fly BV
+    if Config.Fly then
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if root then
+            flyBV = Instance.new("BodyVelocity")
+            flyBV.Name = "NarakuFly"
+            flyBV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+            flyBV.Velocity = Vector3.zero
+            flyBV.Parent = root
+        end
+    end
+end)
+
 -- ═══════════════════════════════════════════════════════
 --                    CONTROLS
 -- ═══════════════════════════════════════════════════════
@@ -1346,10 +1325,20 @@ CloseBtn.MouseButton1Click:Connect(function()
         if type(v) == "boolean" then Config[k] = false end
     end
     if flyBV then flyBV:Destroy() end
+    for target, orig in pairs(HitboxTargets) do
+        pcall(function()
+            if target and target.Parent then
+                target.Size = orig.size
+                target.Transparency = orig.transparency
+                target.CanCollide = orig.canCollide
+                target.Massless = orig.massless
+            end
+        end)
+    end
     Main:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.In, Enum.EasingStyle.Back, 0.3, true)
     task.wait(0.4)
     ScreenGui:Destroy()
-    print("🔒 Naraku Rivals Closed")
+    print("🔒 Naraku Rivals v2.0 Closed")
 end)
 
 local minimized = false
@@ -1383,11 +1372,11 @@ UserInputService.InputBegan:Connect(function(input, gp)
 end)
 
 -- ═══════════════════════════════════════════════════════
---                    WELCOME NOTIFICATION
+--                    WELCOME
 -- ═══════════════════════════════════════════════════════
 local Notify = Instance.new("Frame")
-Notify.Size = UDim2.new(0, 380, 0, 90)
-Notify.Position = UDim2.new(0.5, -190, 0, -120)
+Notify.Size = UDim2.new(0, 400, 0, 100)
+Notify.Position = UDim2.new(0.5, -200, 0, -130)
 Notify.BackgroundColor3 = Theme.Sec
 Notify.BorderSizePixel = 0
 Notify.Parent = ScreenGui
@@ -1412,9 +1401,9 @@ NI.Parent = Notify
 
 local NT = Instance.new("TextLabel")
 NT.Size = UDim2.new(1, -75, 0, 32)
-NT.Position = UDim2.new(0, 70, 0, 12)
+NT.Position = UDim2.new(0, 70, 0, 15)
 NT.BackgroundTransparency = 1
-NT.Text = "NARAKU - RIVALS v1.0"
+NT.Text = "NARAKU - RIVALS v2.0"
 NT.TextColor3 = Theme.Text
 NT.TextSize = 16
 NT.Font = Enum.Font.GothamBlack
@@ -1423,18 +1412,18 @@ NT.Parent = Notify
 
 local NM = Instance.new("TextLabel")
 NM.Size = UDim2.new(1, -75, 0, 25)
-NM.Position = UDim2.new(0, 70, 0, 46)
+NM.Position = UDim2.new(0, 70, 0, 50)
 NM.BackgroundTransparency = 1
-NM.Text = "Aimbot ✓ | Silent Aim ✓ | Hitbox ✓"
+NM.Text = "⚡ AUTO MODE • Everything ON!"
 NM.TextColor3 = Theme.Success
 NM.TextSize = 12
 NM.Font = Enum.Font.GothamBold
 NM.TextXAlignment = Enum.TextXAlignment.Left
 NM.Parent = Notify
 
-TweenService:Create(Notify, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -190, 0, 20)}):Play()
-task.wait(4)
-TweenService:Create(Notify, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -190, 0, -120)}):Play()
+TweenService:Create(Notify, TweenInfo.new(0.5, Enum.EasingStyle.Back), {Position = UDim2.new(0.5, -200, 0, 20)}):Play()
+task.wait(5)
+TweenService:Create(Notify, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -200, 0, -130)}):Play()
 task.wait(0.5)
 Notify:Destroy()
 
@@ -1442,18 +1431,18 @@ Notify:Destroy()
 --                    CONSOLE
 -- ═══════════════════════════════════════════════════════
 print("╔════════════════════════════════════════════╗")
-print("║   NARAKU - RIVALS v1.0 LOADED              ║")
+print("║   NARAKU - RIVALS v2.0 AUTO - LOADED       ║")
 print("║                                            ║")
-print("║  ✓ Aimbot (Rage / Legit)                   ║")
-print("║  ✓ Silent Aim                              ║")
-print("║  ✓ Hitbox Expander                         ║")
-print("║  ✓ Trigger Bot                             ║")
-print("║  ✓ FOV Circle                              ║")
-print("║  ✓ ESP (Box/Name/Health/Distance/Tracer)   ║")
-print("║  ✓ Fly Hack                                ║")
-print("║  ✓ Infinite Jump                           ║")
-print("║  ✓ WalkSpeed Boost                         ║")
+print("║   ⚡ ALL FEATURES AUTO-ENABLED:            ║")
 print("║                                            ║")
-print("║  📌 RightShift = Toggle UI                ║")
-print("║  📌 Right Mouse = Aimbot key              ║")
+print("║   ✓ Silent Aim (Strong)                    ║")
+print("║   ✓ Aimbot (Always On + Auto Fire)         ║")
+print("║   ✓ Hitbox Expander                        ║")
+print("║   ✓ Trigger Bot                            ║")
+print("║   ✓ FOV Circle (Rainbow)                   ║")
+print("║   ✓ ESP (Box/Name/Health/Dist/Tracer)      ║")
+print("║   ✓ Infinite Jump                          ║")
+print("║                                            ║")
+print("║   📌 Just load and play!                   ║")
+print("║   📌 RightShift = Toggle UI                ║")
 print("╚════════════════════════════════════════════╝")
